@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0vxjr81" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+  <bpmn:collaboration id="auto.mobile-service.general">
+    <bpmn:participant id="Participant_1fmey4d" name="platform" processRef="auto.mobile-service.platform.process" />
+    <bpmn:participant id="Participant_1bycchj" name="service company" processRef="auto.mobile-service.service-company.process" />
+    <bpmn:messageFlow id="Flow_16ewg55" sourceRef="auto.mobile-service.client.send-rq-to-service.event" targetRef="auto.mobile-service.service-company.start.event" />
+    <bpmn:messageFlow id="Flow_00gmsr9" sourceRef="auto.mobile-service.service-company.service-provided.event" targetRef="auto.mobile-service.client.waiting-for-fdbk.event" />
+  </bpmn:collaboration>
+  <bpmn:message id="Message_19tugqi" />
+  <bpmn:message id="Message_0e95qpb" />
+  <bpmn:process id="auto.mobile-service.platform.process" name="auto.mobile-service.platform.process" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1w6sr7b">
+      <bpmn:lane id="Lane_0gnmo9b" name="client">
+        <bpmn:flowNodeRef>auto.mobile-service.client.start.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.car-details.s-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.confirm-rq.u-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.send-rq-to-service.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.waiting-for-fdbk.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.give-fdbk.u-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.end.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.accident-details.u-task</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_0ev6x9w" sourceRef="auto.mobile-service.client.start.event" targetRef="auto.mobile-service.client.car-details.s-task" />
+    <bpmn:sequenceFlow id="Flow_1akkkrs" sourceRef="auto.mobile-service.client.car-details.s-task" targetRef="auto.mobile-service.client.accident-details.u-task" />
+    <bpmn:sequenceFlow id="Flow_0k8hv43" sourceRef="auto.mobile-service.client.accident-details.u-task" targetRef="auto.mobile-service.client.confirm-rq.u-task" />
+    <bpmn:startEvent id="auto.mobile-service.client.start.event">
+      <bpmn:outgoing>Flow_0ev6x9w</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="auto.mobile-service.client.car-details.s-task" name="retrieve car details" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:incoming>Flow_0ev6x9w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1akkkrs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="auto.mobile-service.client.confirm-rq.u-task" name="confirm request" camunda:assignee="#{clientUserId}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0k8hv43</bpmn:incoming>
+      <bpmn:outgoing>Flow_12tojky</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_16vtccn" sourceRef="auto.mobile-service.client.give-fdbk.u-task" targetRef="auto.mobile-service.client.end.event" />
+    <bpmn:sequenceFlow id="Flow_12tojky" sourceRef="auto.mobile-service.client.confirm-rq.u-task" targetRef="auto.mobile-service.client.send-rq-to-service.event" />
+    <bpmn:intermediateThrowEvent id="auto.mobile-service.client.send-rq-to-service.event" name="Send request to the service company">
+      <bpmn:incoming>Flow_12tojky</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kn5ww6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1ivk6n2" messageRef="Message_1pii0v9" camunda:class="org.camunda.wf.event.IntermediateThrowEventStartProcessDelegate" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0kn5ww6" sourceRef="auto.mobile-service.client.send-rq-to-service.event" targetRef="auto.mobile-service.client.waiting-for-fdbk.event" />
+    <bpmn:intermediateCatchEvent id="auto.mobile-service.client.waiting-for-fdbk.event" name="Waiting for a message the service is provided">
+      <bpmn:incoming>Flow_0kn5ww6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fljyf7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0b33e3k" messageRef="Message_1bwfczd" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1fljyf7" sourceRef="auto.mobile-service.client.waiting-for-fdbk.event" targetRef="auto.mobile-service.client.give-fdbk.u-task" />
+    <bpmn:userTask id="auto.mobile-service.client.give-fdbk.u-task" name="give feedback" camunda:assignee="#{clientUserId}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fljyf7</bpmn:incoming>
+      <bpmn:outgoing>Flow_16vtccn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="auto.mobile-service.client.end.event">
+      <bpmn:incoming>Flow_16vtccn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="auto.mobile-service.client.accident-details.u-task" name="input accident details" camunda:assignee="#{clientUserId}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1akkkrs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0k8hv43</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmn:process id="auto.mobile-service.service-company.process" name="auto.mobile-service.service-company.process" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0lf0ade">
+      <bpmn:lane id="Lane_0lhdxu9" name="operator">
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.start.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.mob-required.u-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1pdlcu8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.assign-operator.s-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.provide-online-service.u-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1yo4ry6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.service-provided.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.end.event</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0bqhqrq" name="mobile service crew">
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.assign-mobile.s-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.service-company.provide-mob-service.u-task</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="auto.mobile-service.service-company.start.event">
+      <bpmn:outgoing>Flow_0cbss0x</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0ku6yep" messageRef="Message_1pii0v9" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0nunynh" sourceRef="auto.mobile-service.service-company.mob-required.u-task" targetRef="Gateway_1pdlcu8" />
+    <bpmn:sequenceFlow id="Flow_0cbss0x" sourceRef="auto.mobile-service.service-company.start.event" targetRef="auto.mobile-service.service-company.assign-operator.s-task" />
+    <bpmn:userTask id="auto.mobile-service.service-company.mob-required.u-task" name="Check if mobile service required" camunda:assignee="#{operatorUserId}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0n4dh3w</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nunynh</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0n4dh3w" sourceRef="auto.mobile-service.service-company.assign-operator.s-task" targetRef="auto.mobile-service.service-company.mob-required.u-task" />
+    <bpmn:exclusiveGateway id="Gateway_1pdlcu8" name="Mobile service is required ?">
+      <bpmn:incoming>Flow_0nunynh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0o9oiru</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ugb7qg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="auto.mobile-service.service-company.assign-operator.s-task" name="assign request" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:incoming>Flow_0cbss0x</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n4dh3w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0o9oiru" name="No" sourceRef="Gateway_1pdlcu8" targetRef="auto.mobile-service.service-company.provide-online-service.u-task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!mobileServiceRequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="auto.mobile-service.service-company.provide-online-service.u-task" name="provide online service" camunda:assignee="#{operatorUserId}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0o9oiru</bpmn:incoming>
+      <bpmn:outgoing>Flow_02ruwqm</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1yo4ry6" name="problem is solved ?">
+      <bpmn:incoming>Flow_02ruwqm</bpmn:incoming>
+      <bpmn:outgoing>Flow_14tqjkj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0db2x0p</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_02ruwqm" sourceRef="auto.mobile-service.service-company.provide-online-service.u-task" targetRef="Gateway_1yo4ry6" />
+    <bpmn:sequenceFlow id="Flow_1f2wakk" sourceRef="auto.mobile-service.service-company.assign-mobile.s-task" targetRef="auto.mobile-service.service-company.provide-mob-service.u-task" />
+    <bpmn:intermediateThrowEvent id="auto.mobile-service.service-company.service-provided.event" name="Service is provided">
+      <bpmn:incoming>Flow_14tqjkj</bpmn:incoming>
+      <bpmn:incoming>Flow_0ozhio9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fkch4b</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1opxci5" messageRef="Message_1bwfczd" camunda:class="org.camunda.wf.event.IntermediateThrowEventToCatcherDelegate" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="auto.mobile-service.service-company.end.event">
+      <bpmn:incoming>Flow_1fkch4b</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1fkch4b" sourceRef="auto.mobile-service.service-company.service-provided.event" targetRef="auto.mobile-service.service-company.end.event" />
+    <bpmn:serviceTask id="auto.mobile-service.service-company.assign-mobile.s-task" name="assign request" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:incoming>Flow_1ugb7qg</bpmn:incoming>
+      <bpmn:incoming>Flow_0db2x0p</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f2wakk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="auto.mobile-service.service-company.provide-mob-service.u-task" name="provide mobile service" camunda:assignee="#{mobileUserId}">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1f2wakk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ozhio9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_14tqjkj" name="Yes" sourceRef="Gateway_1yo4ry6" targetRef="auto.mobile-service.service-company.service-provided.event">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{onlineService.problemSolved}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ozhio9" sourceRef="auto.mobile-service.service-company.provide-mob-service.u-task" targetRef="auto.mobile-service.service-company.service-provided.event" />
+    <bpmn:sequenceFlow id="Flow_0db2x0p" name="No" sourceRef="Gateway_1yo4ry6" targetRef="auto.mobile-service.service-company.assign-mobile.s-task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{!onlineService.problemSolved}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ugb7qg" name="Yes" sourceRef="Gateway_1pdlcu8" targetRef="auto.mobile-service.service-company.assign-mobile.s-task">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{mobileServiceRequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:message id="Message_1pii0v9" name="auto.mobile-service.client.send-to-service-company.message" />
+  <bpmn:message id="Message_1bwfczd" name="auto.mobile-service.service-company.service-is-provided.event" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="auto.mobile-service.general">
+      <bpmndi:BPMNShape id="Participant_1fmey4d_di" bpmnElement="Participant_1fmey4d" isHorizontal="true">
+        <dc:Bounds x="155" y="80" width="1315" height="295" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0gnmo9b_di" bpmnElement="Lane_0gnmo9b" isHorizontal="true">
+        <dc:Bounds x="185" y="80" width="1285" height="295" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1fljyf7_di" bpmnElement="Flow_1fljyf7">
+        <di:waypoint x="948" y="180" />
+        <di:waypoint x="1010" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kn5ww6_di" bpmnElement="Flow_0kn5ww6">
+        <di:waypoint x="848" y="180" />
+        <di:waypoint x="912" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12tojky_di" bpmnElement="Flow_12tojky">
+        <di:waypoint x="750" y="180" />
+        <di:waypoint x="812" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16vtccn_di" bpmnElement="Flow_16vtccn">
+        <di:waypoint x="1110" y="180" />
+        <di:waypoint x="1182" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0k8hv43_di" bpmnElement="Flow_0k8hv43">
+        <di:waypoint x="580" y="180" />
+        <di:waypoint x="650" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1akkkrs_di" bpmnElement="Flow_1akkkrs">
+        <di:waypoint x="430" y="180" />
+        <di:waypoint x="480" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ev6x9w_di" bpmnElement="Flow_0ev6x9w">
+        <di:waypoint x="278" y="180" />
+        <di:waypoint x="330" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1dte2zh_di" bpmnElement="auto.mobile-service.client.start.event">
+        <dc:Bounds x="242" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xzqwzu_di" bpmnElement="auto.mobile-service.client.car-details.s-task">
+        <dc:Bounds x="330" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1t9o26u_di" bpmnElement="auto.mobile-service.client.confirm-rq.u-task">
+        <dc:Bounds x="650" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wt6z5m_di" bpmnElement="auto.mobile-service.client.send-rq-to-service.event">
+        <dc:Bounds x="812" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="791" y="110" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nod0nq_di" bpmnElement="auto.mobile-service.client.waiting-for-fdbk.event">
+        <dc:Bounds x="912" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="899" y="103" width="63" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jq9w46_di" bpmnElement="auto.mobile-service.client.give-fdbk.u-task">
+        <dc:Bounds x="1010" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0smnwxl_di" bpmnElement="auto.mobile-service.client.end.event">
+        <dc:Bounds x="1182" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1uo749v_di" bpmnElement="auto.mobile-service.client.accident-details.u-task">
+        <dc:Bounds x="480" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1bycchj_di" bpmnElement="Participant_1bycchj" isHorizontal="true">
+        <dc:Bounds x="155" y="290" width="1315" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0bqhqrq_di" bpmnElement="Lane_0bqhqrq" isHorizontal="true">
+        <dc:Bounds x="185" y="550" width="1285" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0lhdxu9_di" bpmnElement="Lane_0lhdxu9" isHorizontal="true">
+        <dc:Bounds x="185" y="290" width="1285" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1fkch4b_di" bpmnElement="Flow_1fkch4b">
+        <di:waypoint x="1118" y="370" />
+        <di:waypoint x="1182" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0db2x0p_di" bpmnElement="Flow_0db2x0p">
+        <di:waypoint x="900" y="395" />
+        <di:waypoint x="900" y="490" />
+        <di:waypoint x="770" y="490" />
+        <di:waypoint x="770" y="570" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="838" y="503" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f2wakk_di" bpmnElement="Flow_1f2wakk">
+        <di:waypoint x="830" y="610" />
+        <di:waypoint x="950" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02ruwqm_di" bpmnElement="Flow_02ruwqm">
+        <di:waypoint x="830" y="370" />
+        <di:waypoint x="875" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ugb7qg_di" bpmnElement="Flow_1ugb7qg">
+        <di:waypoint x="660" y="395" />
+        <di:waypoint x="660" y="610" />
+        <di:waypoint x="730" y="610" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="486" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o9oiru_di" bpmnElement="Flow_0o9oiru">
+        <di:waypoint x="685" y="370" />
+        <di:waypoint x="730" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="701" y="343" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n4dh3w_di" bpmnElement="Flow_0n4dh3w">
+        <di:waypoint x="430" y="370" />
+        <di:waypoint x="490" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cbss0x_di" bpmnElement="Flow_0cbss0x">
+        <di:waypoint x="278" y="370" />
+        <di:waypoint x="330" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nunynh_di" bpmnElement="Flow_0nunynh">
+        <di:waypoint x="590" y="370" />
+        <di:waypoint x="635" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14tqjkj_di" bpmnElement="Flow_14tqjkj">
+        <di:waypoint x="925" y="370" />
+        <di:waypoint x="1082" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="994" y="352" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ozhio9_di" bpmnElement="Flow_0ozhio9">
+        <di:waypoint x="1050" y="610" />
+        <di:waypoint x="1100" y="610" />
+        <di:waypoint x="1100" y="388" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1vvodcp_di" bpmnElement="auto.mobile-service.service-company.start.event">
+        <dc:Bounds x="242" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05cm3a0_di" bpmnElement="auto.mobile-service.service-company.mob-required.u-task">
+        <dc:Bounds x="490" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1pdlcu8_di" bpmnElement="Gateway_1pdlcu8" isMarkerVisible="true">
+        <dc:Bounds x="635" y="345" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="624" y="316" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tdacgo_di" bpmnElement="auto.mobile-service.service-company.assign-operator.s-task">
+        <dc:Bounds x="330" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ttrqhs_di" bpmnElement="auto.mobile-service.service-company.provide-online-service.u-task">
+        <dc:Bounds x="730" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1yo4ry6_di" bpmnElement="Gateway_1yo4ry6" isMarkerVisible="true">
+        <dc:Bounds x="875" y="345" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="857" y="316" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_12n9al4_di" bpmnElement="auto.mobile-service.service-company.service-provided.event">
+        <dc:Bounds x="1082" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1025" y="395" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0io05zo_di" bpmnElement="auto.mobile-service.service-company.end.event">
+        <dc:Bounds x="1182" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i9gwfs_di" bpmnElement="auto.mobile-service.service-company.assign-mobile.s-task">
+        <dc:Bounds x="730" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0inbw3e_di" bpmnElement="auto.mobile-service.service-company.provide-mob-service.u-task">
+        <dc:Bounds x="950" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_16ewg55_di" bpmnElement="Flow_16ewg55">
+        <di:waypoint x="830" y="198" />
+        <di:waypoint x="830" y="260" />
+        <di:waypoint x="260" y="260" />
+        <di:waypoint x="260" y="352" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="506" y="242" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00gmsr9_di" bpmnElement="Flow_00gmsr9">
+        <di:waypoint x="1100" y="352" />
+        <di:waypoint x="1100" y="260" />
+        <di:waypoint x="930" y="260" />
+        <di:waypoint x="930" y="198" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

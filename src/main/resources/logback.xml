@@ -1,0 +1,94 @@
+<configuration>
+
+    <property name="LOG_DIR" value="/home/mikhailb/work/logs/camunda-demo"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern> %d{yyyy-MM-dd HH:mm:ss} %green([%thread]) %highlight(%-5level) %logger{36} - %msg%n </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archived/debug.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>3MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}[%thread]%-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="camunda" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/camunda.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archived/camunda.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>3MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}[%thread]%-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file-error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archived/error.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>3MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}[%thread]%-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Send logs to both console and file audit -->
+    <logger name="commonLogger" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.jobexecutor" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.impl.persistence.entity.JobEntity" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.cmd" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.persistence" level="trace" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.bpmn.behavior" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.impl.persistence.entity" level="trace" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.bpm.engine.tx" level="trace" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="file-error"/>
+    </root>
+
+
+</configuration>
