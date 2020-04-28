@@ -16,9 +16,9 @@
         <bpmn:flowNodeRef>auto.mobile-service.client.confirm-rq.u-task</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.send-rq-to-service.event</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.waiting-for-fdbk.event</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>auto.mobile-service.client.give-fdbk.u-task</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.end.event</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.accident-details.u-task</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.give-fdbk.u-task</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_0ev6x9w" sourceRef="auto.mobile-service.client.start.event" targetRef="auto.mobile-service.client.car-details.s-task" />
@@ -52,13 +52,6 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_0b33e3k" messageRef="Message_1bwfczd" />
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_1fljyf7" sourceRef="auto.mobile-service.client.waiting-for-fdbk.event" targetRef="auto.mobile-service.client.give-fdbk.u-task" />
-    <bpmn:userTask id="auto.mobile-service.client.give-fdbk.u-task" name="give feedback" camunda:assignee="#{clientUserId}">
-      <bpmn:extensionElements>
-        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1fljyf7</bpmn:incoming>
-      <bpmn:outgoing>Flow_16vtccn</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:endEvent id="auto.mobile-service.client.end.event">
       <bpmn:incoming>Flow_16vtccn</bpmn:incoming>
     </bpmn:endEvent>
@@ -69,6 +62,15 @@
       <bpmn:incoming>Flow_1akkkrs</bpmn:incoming>
       <bpmn:outgoing>Flow_0k8hv43</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:callActivity id="auto.mobile-service.client.give-fdbk.u-task" name="give feedback" calledElement="client.feedback">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fljyf7</bpmn:incoming>
+      <bpmn:outgoing>Flow_16vtccn</bpmn:outgoing>
+    </bpmn:callActivity>
   </bpmn:process>
   <bpmn:process id="auto.mobile-service.service-company.process" name="auto.mobile-service.service-company.process" isExecutable="true">
     <bpmn:laneSet id="LaneSet_0lf0ade">
@@ -219,14 +221,14 @@
           <dc:Bounds x="899" y="103" width="63" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0jq9w46_di" bpmnElement="auto.mobile-service.client.give-fdbk.u-task">
-        <dc:Bounds x="1010" y="140" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0smnwxl_di" bpmnElement="auto.mobile-service.client.end.event">
         <dc:Bounds x="1182" y="162" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1uo749v_di" bpmnElement="auto.mobile-service.client.accident-details.u-task">
         <dc:Bounds x="480" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l4xspc_di" bpmnElement="auto.mobile-service.client.give-fdbk.u-task">
+        <dc:Bounds x="1010" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_1bycchj_di" bpmnElement="Participant_1bycchj" isHorizontal="true">
         <dc:Bounds x="155" y="290" width="1315" height="400" />
@@ -237,9 +239,13 @@
       <bpmndi:BPMNShape id="Lane_0lhdxu9_di" bpmnElement="Lane_0lhdxu9" isHorizontal="true">
         <dc:Bounds x="185" y="290" width="1285" height="260" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1fkch4b_di" bpmnElement="Flow_1fkch4b">
-        <di:waypoint x="1118" y="370" />
-        <di:waypoint x="1182" y="370" />
+      <bpmndi:BPMNEdge id="Flow_1ugb7qg_di" bpmnElement="Flow_1ugb7qg">
+        <di:waypoint x="660" y="395" />
+        <di:waypoint x="660" y="610" />
+        <di:waypoint x="730" y="610" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="486" width="19" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0db2x0p_di" bpmnElement="Flow_0db2x0p">
         <di:waypoint x="900" y="395" />
@@ -250,6 +256,22 @@
           <dc:Bounds x="838" y="503" width="14" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ozhio9_di" bpmnElement="Flow_0ozhio9">
+        <di:waypoint x="1050" y="610" />
+        <di:waypoint x="1100" y="610" />
+        <di:waypoint x="1100" y="388" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14tqjkj_di" bpmnElement="Flow_14tqjkj">
+        <di:waypoint x="925" y="370" />
+        <di:waypoint x="1082" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="994" y="352" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fkch4b_di" bpmnElement="Flow_1fkch4b">
+        <di:waypoint x="1118" y="370" />
+        <di:waypoint x="1182" y="370" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1f2wakk_di" bpmnElement="Flow_1f2wakk">
         <di:waypoint x="830" y="610" />
         <di:waypoint x="950" y="610" />
@@ -257,14 +279,6 @@
       <bpmndi:BPMNEdge id="Flow_02ruwqm_di" bpmnElement="Flow_02ruwqm">
         <di:waypoint x="830" y="370" />
         <di:waypoint x="875" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ugb7qg_di" bpmnElement="Flow_1ugb7qg">
-        <di:waypoint x="660" y="395" />
-        <di:waypoint x="660" y="610" />
-        <di:waypoint x="730" y="610" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="640" y="486" width="19" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0o9oiru_di" bpmnElement="Flow_0o9oiru">
         <di:waypoint x="685" y="370" />
@@ -284,18 +298,6 @@
       <bpmndi:BPMNEdge id="Flow_0nunynh_di" bpmnElement="Flow_0nunynh">
         <di:waypoint x="590" y="370" />
         <di:waypoint x="635" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14tqjkj_di" bpmnElement="Flow_14tqjkj">
-        <di:waypoint x="925" y="370" />
-        <di:waypoint x="1082" y="370" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="994" y="352" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ozhio9_di" bpmnElement="Flow_0ozhio9">
-        <di:waypoint x="1050" y="610" />
-        <di:waypoint x="1100" y="610" />
-        <di:waypoint x="1100" y="388" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1vvodcp_di" bpmnElement="auto.mobile-service.service-company.start.event">
         <dc:Bounds x="242" y="352" width="36" height="36" />

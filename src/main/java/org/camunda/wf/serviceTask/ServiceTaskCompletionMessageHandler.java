@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @Component
 public class ServiceTaskCompletionMessageHandler extends BaseImpl implements MessageHandler {

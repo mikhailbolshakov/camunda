@@ -7,10 +7,10 @@ import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.identity.Group;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.common.application.base.ApplicationServiceBaseImpl;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class UserServiceImpl extends ApplicationServiceBaseImpl implements UserService {
 
     @Autowired

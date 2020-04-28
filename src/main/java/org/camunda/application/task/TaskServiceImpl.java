@@ -3,15 +3,14 @@ package org.camunda.application.task;
 import org.camunda.api.task.dto.*;
 import org.camunda.api.task.service.TaskService;
 import org.camunda.bpm.engine.ExternalTaskService;
-import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.common.application.base.ApplicationServiceBaseImpl;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-@Service
+@Component
 public class TaskServiceImpl extends ApplicationServiceBaseImpl implements TaskService {
 
     @Autowired

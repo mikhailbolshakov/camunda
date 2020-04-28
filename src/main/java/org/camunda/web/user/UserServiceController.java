@@ -4,11 +4,12 @@ import org.camunda.api.user.dto.GroupRq;
 import org.camunda.api.user.dto.UserRq;
 import org.camunda.api.user.service.UserService;
 import org.camunda.bpm.engine.identity.User;
+import org.camunda.web.UrlPathConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/camunda/api/custom/user")
+@RequestMapping(value = UrlPathConsts.rootPath + "/user")
 public class UserServiceController implements UserService {
 
     @Autowired

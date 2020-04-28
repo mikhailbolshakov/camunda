@@ -6,9 +6,7 @@ import io.nats.client.MessageHandler;
 import org.camunda.api.task.dto.TaskCompletionRq;
 import org.camunda.api.task.dto.TaskCompletionRs;
 import org.camunda.api.task.service.TaskService;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.common.base.BaseImpl;
-import org.camunda.wf.serviceTask.ServiceTaskCompleteIncomingMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
