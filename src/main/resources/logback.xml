@@ -36,6 +36,14 @@
         <appender-ref ref="file-debug"/>
     </logger>
 
+    <logger name="org.camunda.infrastructure.messageBroker.mock.MockConnection" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
+    <logger name="org.camunda.infrastructure.messageBroker.mock.MockMessageBroker" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+    </logger>
+
     <!--logger name="org.camunda.bpm.engine.jobexecutor" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
     </logger-->

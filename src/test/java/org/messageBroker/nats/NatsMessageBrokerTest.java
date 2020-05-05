@@ -1,15 +1,30 @@
-package org.messageBroker;
+package org.messageBroker.nats;
 
 import io.nats.client.Options;
+import org.camunda.Application;
+import org.camunda.bootstrapper.MessageBrokerConfiguration;
+import org.camunda.common.spring.ApplicationContextProvider;
 import org.camunda.infrastructure.messageBroker.nats.NatsConnection;
 import org.camunda.infrastructure.messageBroker.nats.NatsConnectionOptions;
 import org.camunda.infrastructure.messageBroker.nats.NatsMessageBroker;
 import org.camunda.infrastructure.messageBroker.nats.NatsSubscribeRequest;
+import org.camunda.repository.messageBroker.MessageBroker;
+import org.camunda.repository.messageBroker.MessageBrokerConnection;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 /*
 *
@@ -20,13 +35,18 @@ import org.junit.jupiter.api.Assertions;
 public class NatsMessageBrokerTest {
 
     private NatsConnection createAndOpenConnection() throws MessageBrokerException {
-        NatsMessageBroker nats = new NatsMessageBroker();
+
+        NatsMessageBroker mb = new NatsMessageBroker();
         NatsConnectionOptions options = new NatsConnectionOptions();
 
         options.setUrl(Options.DEFAULT_URL);
         options.setAllowReconnect(true);
+        options.setTimeout(5000);
+        options.setPingInterval(10);
+        options.setReconnectWait(1000);
 
-        NatsConnection connection = (NatsConnection)nats.prepareConnection(options);
+        NatsConnection connection = (NatsConnection)mb.prepareConnection(options);
+
         connection.open();
 
         return connection;

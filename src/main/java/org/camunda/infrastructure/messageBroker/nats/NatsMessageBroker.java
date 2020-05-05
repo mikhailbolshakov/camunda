@@ -1,19 +1,34 @@
 package org.camunda.infrastructure.messageBroker.nats;
 
 import io.nats.client.*;
+import org.camunda.common.spring.ApplicationContextProvider;
 import org.camunda.repository.messageBroker.MessageBrokerConnectionOptions;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBroker;
 import org.camunda.repository.messageBroker.MessageBrokerConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-
+@Component
 public class NatsMessageBroker implements MessageBroker {
 
+    private final String NATS_BROKER_TYPE = "nats";
+
     protected static Logger logger = LoggerFactory.getLogger(NatsMessageBroker.class.getName());
+
+    @Override
+    public String getType() {
+        return NATS_BROKER_TYPE;
+    }
+
+    @Override
+    public MessageBrokerConnectionOptions createOptions() {
+        return ApplicationContextProvider.getContext().getBean(NatsConnectionOptions.class);
+    }
 
     @Override
     public MessageBrokerConnection prepareConnection(MessageBrokerConnectionOptions options) throws MessageBrokerException {
@@ -53,7 +68,6 @@ public class NatsMessageBroker implements MessageBroker {
             throw new MessageBrokerException(e, errMsg);
         }
 
-
-
     }
+
 }

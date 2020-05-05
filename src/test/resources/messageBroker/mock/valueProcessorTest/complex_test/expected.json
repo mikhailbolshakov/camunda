@@ -1,0 +1,27 @@
+{
+  "key": {
+    "attrStr": "string",
+    "attrBoolean": false
+  },
+  "array": [
+    {
+      "attrInt": 20.0,
+      "attrStr": "value",
+      "object": {
+        "attrInt": 20.0,
+        "attrStr": "value"
+      }
+    },
+    {
+      "attrInt": 20.0,
+      "attrStr": "value",
+      "object": {
+        "attrInt": 20.0,
+        "attrStr": "value"
+      }
+    }
+  ],
+  "object": {
+    "key": "string"
+  }
+}

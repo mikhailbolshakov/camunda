@@ -1,0 +1,31 @@
+{
+  "subscribers": [
+    {
+      "topic": "auto.mobile-service.client.car-details.s-task",
+      "handler": {
+        "type": "serviceTask",
+        "actions": [
+          {
+            "type": "publish",
+            "copySourceVariables": true,
+            "message": {
+              "taskExecutionId": "${sourceMessage.taskExecutionId}",
+              "variables": {
+                "onlineService": {
+                  "callTime": 20,
+                  "problemSolved": "${random.nextBoolean()}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "auto.mobile-service.client.accident-details.u-task",
+      "handler": {
+        "type": "userTask"
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "key": "${context.data.attrStr}",
+  "object": {
+    "key": "${context.data.internal.attrInt}"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "subscribers": [
+    {
+      "topic": "test.s-task",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskExecutionId": "${context.sourceMessage.taskExecutionId}",
+              "variables": {
+                "onlineService": {
+                  "callTime": 20,
+                  "problemSolved": "${context.random.nextBoolean()}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "test.u-task",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "${context.sourceMessage.taskId}",
+              "variables": {
+                "onlineService": {
+                  "callTime": 20,
+                  "problemSolved": "${context.random.nextBoolean()}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

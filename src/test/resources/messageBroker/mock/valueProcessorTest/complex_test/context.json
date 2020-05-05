@@ -1,0 +1,27 @@
+{
+  "data": {
+    "attrStr": "value",
+    "object": {
+      "attrInt": 20,
+      "attrStr": "value",
+      "object": {
+        "attrInt": 20,
+        "attrStr": "value"
+      }
+    }
+  },
+  "array": [
+    {
+      "attrStr": "string",
+      "attrBoolean": false
+    },
+    {
+      "attrStr": "string",
+      "attrBoolean": false
+    },
+    {
+      "attrStr": "string",
+      "attrBoolean": false
+    }
+  ]
+}
