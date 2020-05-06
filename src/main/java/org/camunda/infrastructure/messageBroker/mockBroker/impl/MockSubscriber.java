@@ -1,7 +1,7 @@
 package org.camunda.infrastructure.messageBroker.mockBroker.impl;
 
 import com.google.gson.*;
-import org.camunda.infrastructure.messageBroker.mockBroker.Message;
+import org.camunda.repository.messageBroker.Message;
 import org.camunda.infrastructure.messageBroker.mockBroker.MockConnection;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
@@ -106,6 +106,8 @@ public class MockSubscriber implements Subscriber {
                 for(Map.Entry<String, JsonElement> v: e.getValue().getAsJsonObject().entrySet()) {
                     variables.add(v.getKey(), valueProcessor.process(v.getValue()));
                 }
+
+                publishMessage.add(e.getKey(), variables);
 
             }
             else {

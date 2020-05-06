@@ -1,16 +1,14 @@
 package org.camunda.wf.userTask;
 
 import com.google.gson.Gson;
-import io.nats.client.Message;
-import io.nats.client.MessageHandler;
 import org.camunda.api.task.dto.TaskCompletionRq;
 import org.camunda.api.task.dto.TaskCompletionRs;
 import org.camunda.api.task.service.TaskService;
 import org.camunda.common.base.BaseImpl;
+import org.camunda.repository.messageBroker.Message;
+import org.camunda.repository.messageBroker.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
 
 @Component
 public class UserTaskCompletionMessageHandler extends BaseImpl implements MessageHandler {
@@ -22,16 +20,14 @@ public class UserTaskCompletionMessageHandler extends BaseImpl implements Messag
     private org.camunda.bpm.engine.TaskService camundaTaskService;
 
     @Override
-    public void onMessage(Message message) throws InterruptedException {
+    public void onMessage(Message message) {
 
         try {
 
-            String str = new String(message.getData(), StandardCharsets.UTF_8);
-
-            D("Message: %s", str);
+            D("Topic: %s.\n Message: %s", message.getTopic(), message.getPayload());
 
             Gson gson = new Gson();
-            UserTaskCompleteIncomingMessage completionMessage = gson.fromJson(str, UserTaskCompleteIncomingMessage.class);
+            UserTaskCompleteIncomingMessage completionMessage = gson.fromJson(message.getPayload(), UserTaskCompleteIncomingMessage.class);
 
             TaskCompletionRq rq = new TaskCompletionRq();
             rq.variables = completionMessage.getVariables();

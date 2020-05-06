@@ -1,4 +1,4 @@
-package org.camunda.infrastructure.messageBroker.mockBroker;
+package org.camunda.repository.messageBroker;
 
 public interface MessageHandler {
     void onMessage(Message msg);

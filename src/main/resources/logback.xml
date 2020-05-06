@@ -26,22 +26,32 @@
     <!-- Send logs to both console and file audit -->
     <logger name="commonLogger" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
+        <appender-ref ref="console"/>
     </logger>
 
     <logger name="org.camunda.infrastructure.messageBroker.nats.NatsConnection" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
+        <appender-ref ref="console"/>
     </logger>
 
     <logger name="org.camunda.infrastructure.messageBroker.nats.NatsMessageBroker" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
+        <appender-ref ref="console"/>
     </logger>
 
-    <logger name="org.camunda.infrastructure.messageBroker.mock.MockConnection" level="debug" additivity="false">
+    <logger name="org.camunda.infrastructure.messageBroker.mockBroker.MockConnection" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
+        <appender-ref ref="console"/>
     </logger>
 
-    <logger name="org.camunda.infrastructure.messageBroker.mock.MockMessageBroker" level="debug" additivity="false">
+    <logger name="org.camunda.infrastructure.messageBroker.mockBroker.MockMessageBroker" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="org.camunda.bootstrapper.MessageBrokerConfiguration" level="debug" additivity="false">
+        <appender-ref ref="file-debug"/>
+        <appender-ref ref="console"/>
     </logger>
 
     <!--logger name="org.camunda.bpm.engine.jobexecutor" level="debug" additivity="false">

@@ -1,20 +1,36 @@
 package org.camunda.repository.messageBroker;
 
+import org.springframework.util.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class MessageBrokerSubscribeRequest {
+public class MessageBrokerSubscribeRequest {
 
-    protected Map<String, Object> additionalAttrs = new HashMap<String, Object>();
-
-    public Object getAttr(String key) {
-        return additionalAttrs.get(key);
+    private Map<String, Object> attributes = new HashMap<>();
+    public Map<String, Object> getAttributes() {
+        return attributes;
     }
 
-    public void setAttr(String key, Object value) {
-        additionalAttrs.put(key, value);
+    private String topic;
+    public String getTopic() {
+        return topic;
+    }
+    public void setTopic(String value) {
+        topic = value;
     }
 
-    public abstract void validate() throws MessageBrokerException;
+    private MessageHandler messageHandler;
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+    public void setMessageHandler(MessageHandler value) {
+        messageHandler = value;
+    }
+
+    public void validate() throws MessageBrokerException {
+        if(StringUtils.isEmpty(topic) || messageHandler == null)
+            throw new MessageBrokerException("Subscribe request validation error");
+    }
 
 }

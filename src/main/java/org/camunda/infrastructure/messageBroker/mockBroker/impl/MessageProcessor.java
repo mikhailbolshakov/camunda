@@ -1,6 +1,6 @@
 package org.camunda.infrastructure.messageBroker.mockBroker.impl;
 
-import org.camunda.infrastructure.messageBroker.mockBroker.Message;
+import org.camunda.repository.messageBroker.Message;
 import org.camunda.infrastructure.messageBroker.mockBroker.MockConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,10 @@ public class MessageProcessor implements Runnable {
 
         for(Subscriber sub: subscribers) {
 
-            logger.debug(String.format("Handle message.\n Subscriber: %s. Topic: %s. Message: %s", sub.getClass().getSimpleName(), message.getTopic(), message.getPayload()));
-
             try {
 
                 if(sub.getTopic().equals(message.getTopic())) {
+                    logger.debug(String.format("Handle message.\n Subscriber: %s. Topic: %s. Message: %s", sub.getClass().getSimpleName(), message.getTopic(), message.getPayload()));
                     sub.Consume(message);
                 }
 

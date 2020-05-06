@@ -1,30 +1,16 @@
 package org.messageBroker.nats;
 
 import io.nats.client.Options;
-import org.camunda.Application;
-import org.camunda.bootstrapper.MessageBrokerConfiguration;
-import org.camunda.common.spring.ApplicationContextProvider;
 import org.camunda.infrastructure.messageBroker.nats.NatsConnection;
 import org.camunda.infrastructure.messageBroker.nats.NatsConnectionOptions;
 import org.camunda.infrastructure.messageBroker.nats.NatsMessageBroker;
-import org.camunda.infrastructure.messageBroker.nats.NatsSubscribeRequest;
-import org.camunda.repository.messageBroker.MessageBroker;
-import org.camunda.repository.messageBroker.MessageBrokerConnection;
-import org.camunda.repository.messageBroker.MessageBrokerException;
-import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
+import org.camunda.repository.messageBroker.*;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
+import java.util.Arrays;
+import java.util.List;
 
 /*
 *
@@ -34,9 +20,9 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 @Ignore
 public class NatsMessageBrokerTest {
 
-    private NatsConnection createAndOpenConnection() throws MessageBrokerException {
+    private NatsConnection createAndOpenConnection(List<MessageBrokerSubscriptionProvider> subscriptionProviders) throws MessageBrokerException {
 
-        NatsMessageBroker mb = new NatsMessageBroker();
+        NatsMessageBroker mb = new NatsMessageBroker(subscriptionProviders);
         NatsConnectionOptions options = new NatsConnectionOptions();
 
         options.setUrl(Options.DEFAULT_URL);
@@ -52,16 +38,21 @@ public class NatsMessageBrokerTest {
         return connection;
     }
 
+    private NatsConnection createAndOpenConnection() throws MessageBrokerException {
+        return createAndOpenConnection(null);
+    }
+
     @Test
     public void createAndOpenConnectionTest() throws MessageBrokerException {
-        createAndOpenConnection();
+        try(NatsConnection c = createAndOpenConnection()) {};
     }
 
     @Test
     public void closeAndOpenAgainTest() throws MessageBrokerException {
-        NatsConnection connection = createAndOpenConnection();
-        connection.close();
-        connection.open();
+        try(NatsConnection connection = createAndOpenConnection()) {
+            connection.close();
+            connection.open();
+        }
     }
 
     @Test
@@ -74,12 +65,30 @@ public class NatsMessageBrokerTest {
     @Test
     public void subscribeTest() throws MessageBrokerException {
 
-        NatsConnection connection = createAndOpenConnection();
+        try(NatsConnection connection = createAndOpenConnection()) {
 
-        NatsSubscribeRequest request = new NatsSubscribeRequest();
-        request.setSubject("test");
-        request.setMessageHandler((msg) -> {});
-        connection.subscribe(request);
+            MessageBrokerSubscribeRequest request = new MessageBrokerSubscribeRequest();
+            request.setTopic("test");
+            request.setMessageHandler((msg) -> {});
+            connection.subscribe(request);
+
+        }
+
+    }
+
+    @Test
+    public void subscribeWithGroupTest() throws MessageBrokerException {
+
+        try(NatsConnection connection = createAndOpenConnection()) {
+
+            MessageBrokerSubscribeRequest request = new MessageBrokerSubscribeRequest();
+            request.setTopic("test");
+            request.setMessageHandler((msg) -> {});
+            request.getAttributes().put("group", "group1");
+
+            connection.subscribe(request);
+        }
+
     }
 
     @Test
@@ -87,8 +96,8 @@ public class NatsMessageBrokerTest {
         NatsConnection connection = createAndOpenConnection();
         connection.close();
 
-        NatsSubscribeRequest request = new NatsSubscribeRequest();
-        request.setSubject("test");
+        MessageBrokerSubscribeRequest request = new MessageBrokerSubscribeRequest();
+        request.setTopic("test");
         request.setMessageHandler((msg) -> {});
 
         Assertions.assertThrows(MessageBrokerException.class, () -> {connection.subscribe(request);});
@@ -99,7 +108,7 @@ public class NatsMessageBrokerTest {
         NatsConnection connection = createAndOpenConnection();
         connection.close();
 
-        NatsSubscribeRequest request = new NatsSubscribeRequest();
+        MessageBrokerSubscribeRequest request = new MessageBrokerSubscribeRequest();
         request.setMessageHandler((msg) -> {});
 
         Assertions.assertThrows(MessageBrokerException.class, () -> {connection.subscribe(request);});
@@ -108,13 +117,13 @@ public class NatsMessageBrokerTest {
     @Test
     public void publishTest() throws MessageBrokerException {
 
-        NatsConnection connection = createAndOpenConnection();
+        try(NatsConnection connection = createAndOpenConnection()) {
+            MessageBrokerPublishRequest request = new MessageBrokerPublishRequest();
+            request.setSubject("test");
+            request.setMessage("test-message");
 
-        MessageBrokerPublishRequest request = new MessageBrokerPublishRequest();
-        request.setSubject("test");
-        request.setMessage("test-message");
-
-        connection.publish(request);
+            connection.publish(request);
+        }
 
     }
 
@@ -135,12 +144,35 @@ public class NatsMessageBrokerTest {
     @Test
     public void cannotPublishWithoutSubjectTest() throws MessageBrokerException {
 
-        NatsConnection connection = createAndOpenConnection();
+        try( NatsConnection connection = createAndOpenConnection() ) {
 
-        MessageBrokerPublishRequest request = new MessageBrokerPublishRequest();
-        request.setMessage("test-message");
+            MessageBrokerPublishRequest request = new MessageBrokerPublishRequest();
+            request.setMessage("test-message");
 
-        Assertions.assertThrows(MessageBrokerException.class, () -> {connection.publish(request);});
+            Assertions.assertThrows(MessageBrokerException.class, () -> {connection.publish(request);});
+
+        }
+
+    }
+
+    private class TestSubscriptionProvider implements MessageBrokerSubscriptionProvider {
+
+        @Override
+        public void subscribe(MessageBrokerConnection connection) throws MessageBrokerException {
+            MessageBrokerSubscribeRequest request = new MessageBrokerSubscribeRequest();
+            request.setTopic("test");
+            request.setMessageHandler((msg) -> {});
+            connection.subscribe(request);
+        }
+    }
+
+    @Test
+    public void createConnectionWithSubscriptionProvidersTest() throws MessageBrokerException {
+
+        MessageBrokerSubscriptionProvider[] providers = { new TestSubscriptionProvider() };
+        try(NatsConnection connection = createAndOpenConnection(Arrays.asList(providers))) {
+
+        }
 
     }
 

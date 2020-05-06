@@ -1,8 +1,7 @@
 package org.camunda.infrastructure.messageBroker.mockBroker.impl;
 
-import com.google.gson.JsonObject;
-import org.camunda.infrastructure.messageBroker.mockBroker.Message;
-import org.camunda.infrastructure.messageBroker.mockBroker.MessageHandler;
+import org.camunda.repository.messageBroker.Message;
+import org.camunda.repository.messageBroker.MessageHandler;
 
 public class HandlerSubscriber implements Subscriber {
 

@@ -99,7 +99,8 @@ public class ValueProcessorTest {
                             "simple_expression_test",
                             "expression_returns_object_test",
                             "complex_test",
-                            "function_expression_test"
+                            "function_expression_test",
+                            "substitute_expression_test"
                             })
     public void test(String caseFolderName) throws IOException, MessageBrokerException {
         Map<String, Object> testCase = loadTestCase(caseFolderName);

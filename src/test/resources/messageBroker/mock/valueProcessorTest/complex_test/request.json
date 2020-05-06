@@ -1,10 +1,10 @@
 {
-  "key": "${context.array[1]}",
+  "key": "#{context.array[1]}",
   "array": [
-    "${context.data.object}",
-    "${context.data.object}"
+    "#{context.data.object}",
+    "#{context.data.object}"
   ],
   "object": {
-    "key": "${context.array[1].attrStr}"
+    "key": "#{context.array[1].attrStr}"
   }
 }

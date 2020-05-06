@@ -3,11 +3,7 @@ package org.camunda.infrastructure.messageBroker.mockBroker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.camunda.common.spring.ApplicationContextProvider;
-import org.camunda.infrastructure.messageBroker.nats.NatsConnectionOptions;
-import org.camunda.repository.messageBroker.MessageBroker;
-import org.camunda.repository.messageBroker.MessageBrokerConnection;
-import org.camunda.repository.messageBroker.MessageBrokerConnectionOptions;
-import org.camunda.repository.messageBroker.MessageBrokerException;
+import org.camunda.repository.messageBroker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +24,15 @@ public class MockMessageBroker implements MessageBroker {
     private final String MOCK_BROKER_TYPE = "mock";
     private final ResourcePatternResolver resourceLoader;
 
-    protected static Logger logger = LoggerFactory.getLogger(MockMessageBroker.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(MockMessageBroker.class.getName());
+
+    private final List<MessageBrokerSubscriptionProvider> subscriptionProviders;
 
     @Autowired
-    public MockMessageBroker(ResourcePatternResolver resourceLoader) {
+    public MockMessageBroker(ResourcePatternResolver resourceLoader,
+                             List<MessageBrokerSubscriptionProvider> subscriptionProviders) {
         this.resourceLoader = resourceLoader;
+        this.subscriptionProviders = subscriptionProviders;
     }
 
     private String readFromInputStream(InputStream inputStream) throws IOException {
@@ -85,7 +85,7 @@ public class MockMessageBroker implements MessageBroker {
 
             }
 
-            return new MockConnection(scenarios);
+            return new MockConnection(scenarios, subscriptionProviders);
         }
         catch(Exception e) {
             String errMsg = String.format("[MockMessageBroker] Prepare connection error. Error: %s", e.getMessage());

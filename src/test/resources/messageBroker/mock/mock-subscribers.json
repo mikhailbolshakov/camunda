@@ -11,11 +11,11 @@
             "topic": "service-task.completion",
             "copySourceVariables": true,
             "message": {
-              "taskExecutionId": "${context.sourceMessage.taskExecutionId}",
+              "taskExecutionId": "#{context.sourceMessage.taskExecutionId}",
               "variables": {
                 "onlineService": {
                   "callTime": 20,
-                  "problemSolved": "${context.random.nextBoolean()}"
+                  "problemSolved": "#{context.random.nextBoolean()}"
                 }
               }
             }
@@ -34,11 +34,11 @@
             "topic": "user-task.completion",
             "copySourceVariables": true,
             "message": {
-              "taskId": "${context.sourceMessage.taskId}",
+              "taskId": "#{context.sourceMessage.taskId}",
               "variables": {
                 "onlineService": {
                   "callTime": 20,
-                  "problemSolved": "${context.random.nextBoolean()}"
+                  "problemSolved": "#{context.random.nextBoolean()}"
                 }
               }
             }

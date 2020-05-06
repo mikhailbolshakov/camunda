@@ -1,18 +1,17 @@
 package org.camunda.bootstrapper;
 
-import io.nats.client.Options;
-import org.camunda.infrastructure.messageBroker.nats.NatsConnection;
-import org.camunda.infrastructure.messageBroker.nats.NatsConnectionOptions;
-import org.camunda.infrastructure.messageBroker.nats.NatsSubscribeRequest;
-import org.camunda.infrastructure.messageBroker.nats.NatsMessageBroker;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import org.camunda.infrastructure.messageBroker.mockBroker.MockMessageBroker;
 import org.camunda.repository.messageBroker.MessageBroker;
 import org.camunda.repository.messageBroker.MessageBrokerConnectionOptions;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerConnection;
-import org.camunda.wf.serviceTask.ServiceTaskCompletionMessageHandler;
-import org.camunda.wf.userTask.UserTaskCompletionMessageHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,46 +20,24 @@ import java.util.List;
 @Configuration
 public class MessageBrokerConfiguration {
 
-    private final String NATS = "nats";
-    private final String MOCK = "mock";
-
-    private final String SERVICE_TASK_COMPLETION_SUBJECT = "service-task.completion";
-    private final String USER_TASK_COMPLETION_SUBJECT = "user-task.completion";
-
-    //@Autowired
-    private ServiceTaskCompletionMessageHandler serviceTaskCompletionHandler;
-
-    //@Autowired
-    private UserTaskCompletionMessageHandler userTaskCompletionHandler;
+    private final static Logger logger = LoggerFactory.getLogger(MessageBrokerConfiguration.class.getName());
 
     @Autowired
     private List<MessageBroker> supportedMessageBrokers;
 
-    @Value("${org.camunda.message-broker.type" + ":" + NATS + "}")
+    @Value("${org.camunda.message-broker.type}")
     private String type;
-
-    private void setSubscription(NatsConnection connection) throws MessageBrokerException {
-
-        NatsSubscribeRequest request = new NatsSubscribeRequest();
-
-        request.setSubject(SERVICE_TASK_COMPLETION_SUBJECT);
-        request.setMessageHandler(serviceTaskCompletionHandler);
-        connection.subscribe(request);
-
-        request = new NatsSubscribeRequest();
-        request.setSubject(USER_TASK_COMPLETION_SUBJECT);
-        request.setMessageHandler(userTaskCompletionHandler);
-        connection.subscribe(request);
-
-    }
 
     @Bean
     public MessageBrokerConnection createMessageBrokerConnection() throws MessageBrokerException {
+
+        logger.debug("Message broker configuration");
 
         MessageBroker messageBroker = null;
 
         for(MessageBroker mb: supportedMessageBrokers) {
             if (mb.getType().equals(type)) {
+                logger.debug(String.format("Message broker found: %s", mb.getType()));
                 messageBroker = mb;
                 break;
             }
@@ -70,11 +47,11 @@ public class MessageBrokerConfiguration {
             throw new MessageBrokerException(String.format("Message broker with type %s isn't supported", type));
 
         MessageBrokerConnectionOptions options = messageBroker.createOptions();
-        NatsConnection connection = (NatsConnection)messageBroker.prepareConnection(options);
+        MessageBrokerConnection connection = messageBroker.prepareConnection(options);
+
+        logger.debug(String.format("Message broker with type %s used \n Options: %s", messageBroker.getType(), new Gson().toJson(options).toString()));
 
         connection.open();
-
-        //setSubscription(connection);
 
         return connection;
     }

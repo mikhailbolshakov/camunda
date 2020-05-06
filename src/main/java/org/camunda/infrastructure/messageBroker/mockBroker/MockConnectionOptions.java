@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MockConnectionOptions extends MessageBrokerConnectionOptions {
 
-    @Value("${classpath:/messageBroker/mock/*.json}")
+    @Value("${org.camunda.message-broker.mock.resource-path}")
     private String scenarioResourcePath;
 
     public String getScenarioResourcePath() { return scenarioResourcePath; }

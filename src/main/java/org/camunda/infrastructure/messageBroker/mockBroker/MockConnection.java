@@ -1,16 +1,12 @@
 package org.camunda.infrastructure.messageBroker.mockBroker;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.camunda.infrastructure.messageBroker.mockBroker.impl.HandlerSubscriber;
 import org.camunda.infrastructure.messageBroker.mockBroker.impl.MessageProcessor;
 import org.camunda.infrastructure.messageBroker.mockBroker.impl.MockSubscriber;
 import org.camunda.infrastructure.messageBroker.mockBroker.impl.Subscriber;
-import org.camunda.repository.messageBroker.MessageBrokerConnection;
-import org.camunda.repository.messageBroker.MessageBrokerException;
-import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
-import org.camunda.repository.messageBroker.MessageBrokerSubscribeRequest;
+import org.camunda.repository.messageBroker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,22 +17,29 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class MockConnection implements MessageBrokerConnection, AutoCloseable {
 
-    private static Logger logger = LoggerFactory.getLogger(MockConnection.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(MockConnection.class.getName());
 
-    private List<JsonObject> rules;
+    private final List<JsonObject> rules;
 
     private final BlockingQueue<Message> messageQueue = new LinkedBlockingDeque<>();
     private final CopyOnWriteArrayList<Subscriber> subscribers = new CopyOnWriteArrayList<>();
     private final MessageProcessor processor = new MessageProcessor(messageQueue, subscribers);
 
+    private final List<MessageBrokerSubscriptionProvider> subscriptionProviders;
+
     private boolean isOpen = false;
 
-    public MockConnection(List<JsonObject> rules) throws MessageBrokerException {
+    public MockConnection(List<JsonObject> rules,
+                          List<MessageBrokerSubscriptionProvider> subscriptionProviders) throws MessageBrokerException {
         this.rules = rules;
+        this.subscriptionProviders = subscriptionProviders;
+
         registerMockSubscribers();
     }
 
     private void registerMockSubscribers() throws MessageBrokerException {
+
+        logger.debug(String.format("[MockMessageBroker] Mock subscribers registration. Found %d ones", rules.size()));
 
         for(JsonObject rule: rules) {
 
@@ -55,6 +58,8 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
                 ms.validateHandler();
 
                 subscribers.add(ms);
+
+                logger.debug(String.format("[MockMessageBroker] %s - Mock subscriber registered", topic));
 
             }
 
@@ -85,6 +90,14 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
 
             isOpen = true;
 
+            // set subscription if a providers specified
+            if (subscriptionProviders != null)
+                for(MessageBrokerSubscriptionProvider p: subscriptionProviders){
+                    p.subscribe(this);
+                }
+
+            logger.debug("[MockMessageBroker] Connection opened");
+
         }
         catch (Exception e) {
             catchError(e, "Connection error.", true);
@@ -107,6 +120,8 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
             processor.interrupt();
 
             isOpen = false;
+
+            logger.debug("[MockMessageBroker] Connection closed");
 
         }
         catch(Exception e) {
@@ -144,22 +159,22 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
 
             checkConnectionState(true);
 
-            if (!(request instanceof MockSubscribeRequest))
-                throw new MessageBrokerException("Unproper request type: %s", request.getClass().getName());
-
             request.validate();
 
-            MockSubscribeRequest rq = (MockSubscribeRequest) request;
-
-            Subscriber s = new HandlerSubscriber(rq.getTopic(), rq.getMessageHandler());
+            Subscriber s = new HandlerSubscriber(request.getTopic(), request.getMessageHandler());
             subscribers.add(s);
 
-            logger.debug(String.format("[MockMessageBroker] Consumer registered. Subject: %s", rq.getTopic()));
+            logger.debug(String.format("[MockMessageBroker] Subscriber registered. Subject: %s", request.getTopic()));
 
         } catch (Exception e) {
             catchError(e, "Subscriber registration error.", true);
         }
 
+    }
+
+    @Override
+    public List<MessageBrokerSubscriptionProvider> getSubscriptionProviders() {
+        return subscriptionProviders;
     }
 
     public boolean notProcessedMessagesExist() {

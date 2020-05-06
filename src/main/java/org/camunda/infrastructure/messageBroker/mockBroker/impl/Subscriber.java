@@ -1,6 +1,6 @@
 package org.camunda.infrastructure.messageBroker.mockBroker.impl;
 
-import org.camunda.infrastructure.messageBroker.mockBroker.Message;
+import org.camunda.repository.messageBroker.Message;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 
 public interface Subscriber {

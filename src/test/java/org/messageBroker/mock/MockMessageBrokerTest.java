@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import org.camunda.infrastructure.messageBroker.mockBroker.*;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
+import org.camunda.repository.messageBroker.MessageBrokerSubscribeRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +18,7 @@ public class MockMessageBrokerTest {
 
     private MockConnection createAndOpenConnection() throws MessageBrokerException {
 
-        MockMessageBroker mb = new MockMessageBroker(new PathMatchingResourcePatternResolver());
+        MockMessageBroker mb = new MockMessageBroker(new PathMatchingResourcePatternResolver(), null);
         MockConnectionOptions options = new MockConnectionOptions();
 
         options.setScenarioResourcePath("classpath:/messageBroker/mock/*.json");
@@ -55,7 +56,7 @@ public class MockMessageBrokerTest {
 
         try(MockConnection connection = createAndOpenConnection()) {
 
-            MockSubscribeRequest rq = new MockSubscribeRequest();
+            MessageBrokerSubscribeRequest rq = new MessageBrokerSubscribeRequest();
             rq.setTopic("service-task.completion");
 
             rq.setMessageHandler((msg) -> { done = true; });
@@ -97,7 +98,7 @@ public class MockMessageBrokerTest {
 
         try(MockConnection connection = createAndOpenConnection()) {
 
-            MockSubscribeRequest rq = new MockSubscribeRequest();
+            MessageBrokerSubscribeRequest rq = new MessageBrokerSubscribeRequest();
             rq.setTopic("user-task.completion");
 
             rq.setMessageHandler((msg) -> { done = true; });

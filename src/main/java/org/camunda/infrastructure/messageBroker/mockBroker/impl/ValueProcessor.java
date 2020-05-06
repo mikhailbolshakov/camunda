@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class ValueProcessor {
 
     private Map<String, Object> jsonContext = null;
-    private final Pattern pattern = Pattern.compile("\\$\\{(.+)\\}");
+    private final Pattern pattern = Pattern.compile("#\\{(.+)\\}");
 
     public void setContext(Map<String, Object> context) {
         jsonContext = context;

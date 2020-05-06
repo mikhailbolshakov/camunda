@@ -1,6 +1,6 @@
 {
-  "key": "${context.data.error}",
+  "key": "#{context.data.error}",
   "object": {
-    "key": "${context.data.internal.error}"
+    "key": "#{context.data.internal.error}"
   }
 }

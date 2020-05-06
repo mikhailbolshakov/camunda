@@ -1,5 +1,7 @@
 package org.camunda.repository.messageBroker;
 
+import java.util.List;
+
 public interface MessageBrokerConnection {
 
     // is connection open
@@ -16,5 +18,8 @@ public interface MessageBrokerConnection {
 
     // subscribe to messages
     void subscribe(MessageBrokerSubscribeRequest request) throws MessageBrokerException;
+
+    // subscription providers
+    List<MessageBrokerSubscriptionProvider> getSubscriptionProviders();
 
 }

@@ -31,7 +31,7 @@ select  p.ID_,
 
 Docker
 ````
-sudo docker image build -t mikhailbolshakov/camunda-tomcat ./ 
+sudo docker image build --rm -t mikhailbolshakov/camunda-tomcat ./ 
 
 sudo docker container run --rm -it --network=host mikhailbolshakov/camunda-tomcat
 ````

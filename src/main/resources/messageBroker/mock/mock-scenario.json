@@ -4,16 +4,19 @@
       "topic": "auto.mobile-service.client.car-details.s-task",
       "handler": {
         "type": "serviceTask",
+        "delay": 2000,
         "actions": [
           {
             "type": "publish",
+            "topic": "service-task.completion",
             "copySourceVariables": true,
             "message": {
-              "taskExecutionId": "${sourceMessage.taskExecutionId}",
+              "taskExecutionId": "#{context.sourceMessage.taskExecutionId}",
               "variables": {
-                "onlineService": {
-                  "callTime": 20,
-                  "problemSolved": "${random.nextBoolean()}"
+                "car": {
+                  "mark": "BMW",
+                  "model": "X5",
+                  "number": "e720MO190"
                 }
               }
             }
@@ -21,11 +24,211 @@
         ]
       }
     },
+
     {
       "topic": "auto.mobile-service.client.accident-details.u-task",
       "handler": {
-        "type": "userTask"
+        "type": "userTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "#{context.sourceMessage.taskId}",
+              "variables": {
+                "accident": {
+                  "location": "Moscow, st.Kutuzovskaya, 1",
+                  "reason": "Engine doesn't start"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "auto.mobile-service.client.confirm-rq.u-task",
+      "handler": {
+        "type": "userTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "#{context.sourceMessage.taskId}",
+              "variables": {
+                "confirmation": {
+                  "confirmation-date": "2020-01-01"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "auto.mobile-service.service-company.assign-operator.s-task",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskExecutionId": "#{context.sourceMessage.taskExecutionId}",
+              "variables": {
+                "operatorUserId": "#{`scOperator${context.random.nextInt(3) + 1}`}"
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "auto.mobile-service.service-company.mob-required.u-task",
+      "handler": {
+        "type": "userTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "#{context.sourceMessage.taskId}",
+              "variables": {
+                "mobileServiceRequired": "#{context.random.nextBoolean()}"
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "auto.mobile-service.service-company.assign-mobile.s-task",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskExecutionId": "#{context.sourceMessage.taskExecutionId}",
+              "variables": {
+                "mobileUserId": "#{`mobService${context.random.nextInt(2) + 1}`}"
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "auto.mobile-service.service-company.provide-online-service.u-task",
+      "handler": {
+        "type": "userTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "#{context.sourceMessage.taskId}",
+              "variables": {
+                "onlineService": {
+                  "callTime": 20,
+                  "problemSolved": "#{context.random.nextBoolean()}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "auto.mobile-service.service-company.provide-mob-service.u-task",
+      "handler": {
+        "type": "userTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "#{context.sourceMessage.taskId}",
+              "variables": {
+                "mobileService": {
+                  "serviceTime": "#{context.random.nextInt(100)}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "client-feedback.teleconsultant.assign.s-task",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskExecutionId": "#{context.sourceMessage.taskExecutionId}",
+              "variables": {
+                "feedback": {
+                  "teleconsultantUserId": "#{`teleConsultant${context.random.nextInt(1) + 1}`}"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "topic": "client-feedback.teleconsultant.call-client.u-task",
+      "handler": {
+        "type": "userTask",
+        "delay": 2000,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "taskId": "#{context.sourceMessage.taskId}",
+              "variables": {
+                "feedback": {
+                  "obtained": "#{context.random.nextBoolean()}",
+                  "rate": "#{context.random.nextInt(9) + 1}",
+                  "appointedNextCall": "#{context.random.nextBoolean()}"
+                }
+              }
+            }
+          }
+        ]
       }
     }
+
   ]
 }

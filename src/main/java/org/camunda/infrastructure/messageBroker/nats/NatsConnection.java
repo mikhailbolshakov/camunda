@@ -1,28 +1,33 @@
 package org.camunda.infrastructure.messageBroker.nats;
 
 import io.nats.client.*;
-import org.camunda.repository.messageBroker.MessageBrokerException;
-import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
-import org.camunda.repository.messageBroker.MessageBrokerSubscribeRequest;
-import org.camunda.repository.messageBroker.MessageBrokerConnection;
+import io.nats.client.Message;
+import org.camunda.repository.messageBroker.*;
+import org.camunda.repository.messageBroker.MessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-public class NatsConnection implements MessageBrokerConnection {
+public class NatsConnection implements MessageBrokerConnection, AutoCloseable {
 
-    protected static Logger logger = LoggerFactory.getLogger(NatsConnection.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(NatsConnection.class.getName());
 
-    protected Options connectionOptions;
-    protected Connection connection = null;
+    private final Options connectionOptions;
+    private Connection connection = null;
 
-    public NatsConnection(Options opt) {
+    private final List<MessageBrokerSubscriptionProvider> subscriptionProviders;
+
+    public NatsConnection(Options opt, List<MessageBrokerSubscriptionProvider> subscriptionProviders) {
         this.connectionOptions = opt;
+        this.subscriptionProviders = subscriptionProviders;
     }
 
-    protected void catchNatsError(Throwable e, String message, boolean rethrow) throws MessageBrokerException{
+    private void catchNatsError(Throwable e, String message, boolean rethrow) throws MessageBrokerException{
         String errMsg = String.format("[NATS] %s.\n Error: %s", message, e.getMessage());
         logger.error(errMsg, e);
         if (rethrow)
@@ -43,6 +48,14 @@ public class NatsConnection implements MessageBrokerConnection {
             checkConnectionState(false);
             connection = Nats.connect(connectionOptions);
 
+            // set subscription if a providers specified
+            if (subscriptionProviders != null)
+                for(MessageBrokerSubscriptionProvider p: subscriptionProviders){
+                    p.subscribe(this);
+                }
+
+            logger.debug("[NATS] Connection opened");
+
         } catch (Exception e) {
             catchNatsError(e, "Connection error.", true);
         }
@@ -61,6 +74,8 @@ public class NatsConnection implements MessageBrokerConnection {
                 throw new MessageBrokerException("Can't close not active connection.");
 
             connection.close();
+
+            logger.debug("[NATS] Connection closed");
         }
         catch(Exception e) {
             catchNatsError(e, "Close connection error.", true);
@@ -78,26 +93,32 @@ public class NatsConnection implements MessageBrokerConnection {
 
             connection.publish(request.getSubject(), request.getMessage().getBytes(StandardCharsets.UTF_8));
 
-            logger.debug(String.format("[NATS] Message sent.\n Subject: %s.\n Message: %s", request.getSubject(), request.getMessage()));
+            logger.debug(String.format("[NATS] Message published.\n Subject: %s.\n Message: %s", request.getSubject(), request.getMessage()));
 
         } catch (Exception e) {
             catchNatsError(e, "Publishing error.", true);
         }
     }
 
-    protected void handlerInternal(MessageHandler handler, Message msg) {
+    protected org.camunda.repository.messageBroker.Message convertMessage(Message natsMessage) {
+        org.camunda.repository.messageBroker.Message internalMsg = new org.camunda.repository.messageBroker.Message();
+        internalMsg.setTopic(natsMessage.getSubject());
+        internalMsg.setPayload(new String(natsMessage.getData(), StandardCharsets.UTF_8));
+        return internalMsg;
+    }
 
-        String msgTxt = "";
+    protected void handlerInternal(MessageHandler handler, Message natsMsg) {
+
+        org.camunda.repository.messageBroker.Message message = convertMessage(natsMsg);
 
         try {
-            msgTxt = new String(msg.getData(), StandardCharsets.UTF_8);
 
-            logger.debug(String.format("[NATS] Message received: %s", msgTxt));
+            logger.debug(String.format("[NATS] Message received: %s", message.getPayload()));
 
-            handler.onMessage(msg);
+            handler.onMessage(message);
 
         } catch (Exception e) {
-            String errMsg = String.format("[NATS] %s.\n Message: %s.\n Error: %s", msgTxt, e.getMessage());
+            String errMsg = String.format("[NATS] Error.\n Message: %s.\n Error: %s", message.getPayload(), e.getMessage());
             logger.error(errMsg, e);
         }
     }
@@ -109,25 +130,25 @@ public class NatsConnection implements MessageBrokerConnection {
 
             checkConnectionState(true);
 
-            if (!(request instanceof NatsSubscribeRequest))
-                throw new MessageBrokerException("Unproper request type: %s", request.getClass().getName());
-
             request.validate();
 
-            NatsSubscribeRequest rq = (NatsSubscribeRequest) request;
+            Dispatcher dispatcher = connection.createDispatcher((msg) -> handlerInternal(request.getMessageHandler(), msg));
 
-            Dispatcher dispatcher = connection.createDispatcher((msg) -> handlerInternal(rq.getMessageHandler(), msg));
-
-            if(!StringUtils.isEmpty(rq.getGroup()))
-                dispatcher.subscribe(rq.getSubject(), rq.getGroup());
+            if(request.getAttributes().containsKey("group"))
+                dispatcher.subscribe(request.getTopic(), (String)request.getAttributes().get("group"));
             else
-                dispatcher.subscribe(rq.getSubject());
+                dispatcher.subscribe(request.getTopic());
 
-            logger.debug(String.format("[NATS] Consumer registered. Subject: %s", rq.getSubject()));
+            logger.debug(String.format("[NATS] Subscriber registered. Subject: %s", request.getTopic()));
 
         } catch (Exception e) {
             catchNatsError(e, "Subscriber registration error.", true);
         }
 
+    }
+
+    @Override
+    public List<MessageBrokerSubscriptionProvider> getSubscriptionProviders() {
+        return subscriptionProviders;
     }
 }
