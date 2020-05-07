@@ -1,4 +1,4 @@
-##How to install and run
+## How to install and run
 
 #### Source code
 
@@ -23,7 +23,15 @@ It uses Mock message broker by default which is OK for the first run
 
 #### Application build and deploy 
 
-###### Java & Maven
+There are a few ways how app can be build and run
+
+* Built and deployed with maven on standalone tomcat - *the best fit for development*
+* Built with maven and run as docker image (tomcat based) - *not require to install Tomcat*
+* Built and run as docker image (maven + tomcat based) - *not require neither maven nor Tomcat*  
+
+###### Java & Maven (if you want to build with local maven)
+
+if you are going to use third option you can skip this chapter
 
 Make sure you have JDK installed 
 
@@ -77,7 +85,7 @@ mvn clean tomcat7:deploy
 mvn clean tomcat7:redeploy
 ```` 
 
-###### Build and deploy on tomcat
+###### Build and deploy docker image (tomcat based)
 
 * build application with maven
 
@@ -98,7 +106,12 @@ sudo docker image build --rm -t mikhailbolshakov/camunda-tomcat ./
 sudo docker container run --rm -it --network=host mikhailbolshakov/camunda-tomcat
 ````
 
-###### Build and deploy
+###### Build and deploy docker image (tomcat + maven based)
+
+You should use `Dockerfile.maven-build` to build image.
+It will build and deploy the application without any additional software installed on your local
+
+###### Run the process
 
 If all steps have been successfully completed you can browse a camunda web app on ``http://localhost:8080/camundaDemo``
 
