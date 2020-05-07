@@ -36,8 +36,8 @@ public class MessageBrokerConfiguration {
         MessageBroker messageBroker = null;
 
         for(MessageBroker mb: supportedMessageBrokers) {
+            logger.debug(String.format("Message broker found: %s", mb.getType()));
             if (mb.getType().equals(type)) {
-                logger.debug(String.format("Message broker found: %s", mb.getType()));
                 messageBroker = mb;
                 break;
             }
@@ -47,9 +47,10 @@ public class MessageBrokerConfiguration {
             throw new MessageBrokerException(String.format("Message broker with type %s isn't supported", type));
 
         MessageBrokerConnectionOptions options = messageBroker.createOptions();
-        MessageBrokerConnection connection = messageBroker.prepareConnection(options);
 
         logger.debug(String.format("Message broker with type %s used \n Options: %s", messageBroker.getType(), new Gson().toJson(options).toString()));
+
+        MessageBrokerConnection connection = messageBroker.prepareConnection(options);
 
         connection.open();
 
