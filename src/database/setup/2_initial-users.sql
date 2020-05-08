@@ -1,3 +1,5 @@
+USE camunda;
+
 INSERT INTO ACT_ID_GROUP
 (ID_, REV_, NAME_, TYPE_)
 VALUES('camunda-admin', 1, 'camunda BPM Administrators', 'SYSTEM');

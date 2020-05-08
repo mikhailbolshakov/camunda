@@ -98,12 +98,12 @@ as a result of a successful build you should find ``target`` folder and ``camund
 * build a docker image 
 
 ````
-sudo docker image build --rm -t mikhailbolshakov/camunda-tomcat ./ 
+sudo docker build --rm -t mikhailbolshakov/camunda-tomcat ./ 
 ````
 
-* run a container
+* run a container (make sure environment variables correctly set in `env.list` )
 ````
-sudo docker container run --rm -it --network=host mikhailbolshakov/camunda-tomcat
+sudo docker run --rm -it --network=host --env-file ./env.list mikhailbolshakov/camunda-tomcat
 ````
 
 ###### Build and deploy docker image (tomcat + maven based)

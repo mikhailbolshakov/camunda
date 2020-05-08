@@ -1411,7 +1411,8 @@ alter table ACT_ID_TENANT_MEMBER
     foreign key (GROUP_ID_)
     references ACT_ID_GROUP (ID_);
 
-   
+CREATE USER 'camunda'@'%' IDENTIFIED BY 'camunda';
+GRANT ALL PRIVILEGES ON *.* TO 'camunda'@'%' WITH GRANT OPTION;
 
 
    

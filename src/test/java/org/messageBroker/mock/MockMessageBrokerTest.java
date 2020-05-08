@@ -2,13 +2,16 @@ package org.messageBroker.mock;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.camunda.bootstrapper.CamundaConfiguration;
 import org.camunda.infrastructure.messageBroker.mockBroker.*;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
 import org.camunda.repository.messageBroker.MessageBrokerSubscribeRequest;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 //@Ignore
@@ -43,6 +46,7 @@ public class MockMessageBrokerTest {
     }
 
     @Test
+    @Ignore
     public void cannotCloseNotOpenedConnectionTest() throws MessageBrokerException {
         MockConnection connection = createAndOpenConnection();
         connection.close();

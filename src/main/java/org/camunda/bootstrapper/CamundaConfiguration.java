@@ -50,7 +50,7 @@ public class CamundaConfiguration {
         config.setJobExecutorActivate(true);
         config.setMetricsEnabled(false);
 
-        logger.debug(String.format("[CamundaConfiguration] Process engine configuration"));
+        logger.debug("[CamundaConfiguration] Process engine configuration");
 
         autoDeployment(config);
 

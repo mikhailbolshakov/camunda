@@ -55,6 +55,11 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
+    <logger name="org.camunda.bootstrapper.CamundaConfiguration" level="${org.camunda.logging.level}" additivity="false">
+        <appender-ref ref="file-debug"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
     <!--logger name="org.camunda.bpm.engine.jobexecutor" level="debug" additivity="false">
         <appender-ref ref="file-debug"/>
     </logger-->
