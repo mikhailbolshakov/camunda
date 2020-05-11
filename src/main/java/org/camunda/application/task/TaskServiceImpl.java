@@ -2,7 +2,6 @@ package org.camunda.application.task;
 
 import org.camunda.api.task.dto.*;
 import org.camunda.api.task.service.TaskService;
-import org.camunda.bpm.engine.ExternalTaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.camunda.common.application.base.ApplicationServiceBaseImpl;
@@ -13,11 +12,12 @@ import org.springframework.util.StringUtils;
 @Component
 public class TaskServiceImpl extends ApplicationServiceBaseImpl implements TaskService {
 
-    @Autowired
-    private org.camunda.bpm.engine.TaskService camundaTaskService;
+    private final org.camunda.bpm.engine.TaskService camundaTaskService;
 
     @Autowired
-    private ExternalTaskService camundaExternalTaskService;
+    public TaskServiceImpl(org.camunda.bpm.engine.TaskService camundaTaskService) {
+        this.camundaTaskService = camundaTaskService;
+    }
 
     @Override
     public TaskSearchRs search(TaskSearchRq taskSearchRq) {

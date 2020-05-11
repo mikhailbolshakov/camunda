@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = UrlPathConsts.rootPath + "/process")
 public class ProcessServiceController implements ProcessService {
 
+    private final ProcessService processservice;
+
     @Autowired
-    private ProcessService processservice;
+    public ProcessServiceController(ProcessService processservice) {
+        this.processservice = processservice;
+    }
 
     @Override
     @ResponseBody

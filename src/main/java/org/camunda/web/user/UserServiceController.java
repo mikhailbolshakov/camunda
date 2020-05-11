@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = UrlPathConsts.rootPath + "/user")
 public class UserServiceController implements UserService {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserServiceController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     @PostMapping

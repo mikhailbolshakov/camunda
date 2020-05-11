@@ -13,8 +13,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserServiceImpl extends ApplicationServiceBaseImpl implements UserService {
 
+    private final IdentityService identityService;
+
     @Autowired
-    private IdentityService identityService;
+    public UserServiceImpl(IdentityService identityService) {
+        this.identityService = identityService;
+    }
 
     @Override
     public String createUser(UserRq userRq) {

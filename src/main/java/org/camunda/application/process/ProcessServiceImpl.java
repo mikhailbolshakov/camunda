@@ -15,8 +15,12 @@ import java.util.UUID;
 @Component
 public class ProcessServiceImpl extends ApplicationServiceBaseImpl implements ProcessService {
 
+    private final RuntimeService camundaRuntimeService;
+
     @Autowired
-    private RuntimeService camundaRuntimeService;
+    public ProcessServiceImpl(RuntimeService camundaRuntimeService) {
+        this.camundaRuntimeService = camundaRuntimeService;
+    }
 
     @Override
     public StartProcessRs startProcess(StartProcessRq rq) {

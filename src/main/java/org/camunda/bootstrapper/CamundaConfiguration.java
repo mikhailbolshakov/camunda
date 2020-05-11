@@ -2,6 +2,7 @@ package org.camunda.bootstrapper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
+import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
@@ -30,8 +31,10 @@ public class CamundaConfiguration {
     @Autowired
     private DataSource dataSource;
 
-    @Value("${org.camunda.autodeployment-path}")
+    @Value("${org.camunda.autodeployment-path:classpath:/processes/*.bpmn}")
     private String autoDeploymentPath;
+    @Value("${org.camunda.autodeployment:false}")
+    private Boolean autoDeployment;
 
     @Autowired
     private ResourcePatternResolver resourceLoader;
@@ -52,7 +55,8 @@ public class CamundaConfiguration {
 
         logger.debug("[CamundaConfiguration] Process engine configuration");
 
-        autoDeployment(config);
+        if (autoDeployment)
+            autoDeployment(config);
 
         return config;
     }

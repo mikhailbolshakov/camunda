@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = UrlPathConsts.rootPath + "/tasks")
 public class TaskServiceController {
 
+    private final TaskService taskService;
+
     @Autowired
-    private TaskService taskService;
+    public TaskServiceController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @ResponseBody
     @GetMapping

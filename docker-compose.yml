@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  camunda:
+    container_name: camunda
+    image: docker.doctoroncall.ru/camunda:v1.0.0
+    network_mode: host
+    build:
+      context: ./
+
+      # uncomment to build  without Maven installed
+      #dockerfile: Dockerfile.maven-build
+
+      # requires Maven installed
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - /var/www/camunda:/var/camunda
