@@ -16,4 +16,5 @@ services:
     env_file:
       - .env
     volumes:
-      - /var/www/camunda:/var/camunda
+      - /var/www/camunda/logs:/var/camunda/logs
+      - /var/www/camunda/deployment:/var/camunda/deployment

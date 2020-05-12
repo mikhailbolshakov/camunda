@@ -1,6 +1,5 @@
 <configuration>
 
-    <!--property name="LOG_DIR" value="/home/mikhailb/work/logs/camunda-demo"/-->
     <property resource="application.properties" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -10,9 +9,9 @@
     </appender>
 
     <appender name="file-debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${org.camunda.logging.directory}/camunda-demo/debug.log</file>
+        <file>${org.camunda.logging.directory}/debug.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${org.camunda.logging.directory}/camunda-demo/archived/debug.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
+            <fileNamePattern>${org.camunda.logging.directory}/archived/debug.%d{yyyy-MM-dd-HH-mm}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
@@ -24,39 +23,49 @@
         </encoder>
     </appender>
 
+    <appender name="logstash" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${org.camunda.logging.directory}/logstash.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${org.camunda.logging.directory}/camunda.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
     <!-- Send logs to both console and file audit -->
     <logger name="commonLogger" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.camunda.infrastructure.messageBroker.nats.NatsConnection" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.camunda.infrastructure.messageBroker.nats.NatsMessageBroker" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.camunda.infrastructure.messageBroker.mockBroker.MockConnection" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.camunda.infrastructure.messageBroker.mockBroker.MockMessageBroker" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.camunda.bootstrapper.MessageBrokerConfiguration" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="org.camunda.bootstrapper.CamundaConfiguration" level="${org.camunda.logging.level}" additivity="false">
-        <appender-ref ref="file-debug"/>
+        <appender-ref ref="logstash"/>
         <appender-ref ref="STDOUT"/>
     </logger>
 

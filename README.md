@@ -1,8 +1,7 @@
 ## How to install and run
 
-#### Source code
+#### Repository
 
-Download the source code from the git repository 
 ````
 git clone https://github.com/mikhailbolshakov/camunda.git
 ````
@@ -13,7 +12,7 @@ For application to successfully start you need a database configured and run
 
 Although, variety of databases is supported now we are playing around with MySQL
 
-In the folder ``src/database`` you can find initial database script for MySQL (Tested on 7 and 8 versions)
+Please, refer to [database reference](./docs/database.md) for more info
 
 #### Application configuration
 
@@ -53,8 +52,6 @@ On my local I have ``3.6.0`` version
 
 You can either deploy application on tomcat application server or build a docker image
 
-Move to the application folder
-
 ###### Build and deploy on tomcat
 
 * Make sure you have tomcat server installed and running
@@ -74,14 +71,14 @@ sudo systemctl status tomcat
 sudo systemctl start tomcat
 ````
 
-* Build and deploy application with maven
-Use ``redeploy`` command if you've already deployed application
+* Build and deploy application with maven from app root folder
 
 ````
-# fisrt deploy
 mvn clean tomcat7:deploy
+````
 
-# redeploy 
+Use ``redeploy`` command if you've already deployed application
+````
 mvn clean tomcat7:redeploy
 ```` 
 
@@ -111,7 +108,18 @@ sudo docker run --rm -it --network=host --env-file ./env.list mikhailbolshakov/c
 You should use `Dockerfile.maven-build` to build image.
 It will build and deploy the application without any additional software installed on your local
 
-###### Run the process
+
+#### Message broker configuration
+
+To run the process a message broker must be properly configured.
+Please, refer to [message broker reference](./docs/message-broker.md)
+
+#### Deployment models
+
+To run the process you have to deploy a process model first
+Please, refer to [message broker reference](./docs/message-broker.md)
+
+#### Run the process
 
 If all steps have been successfully completed you can browse a camunda web app on ``http://localhost:8080/camundaDemo``
 
@@ -119,7 +127,7 @@ Then you can run a test process by sending POST request with the parameters
 
 http://localhost:8080/camundaDemo/custom-api/process/instance
 
-````
+````json
 {
 	"processKey": "auto.mobile-service.platform.process",
 	"variables": {
@@ -130,7 +138,7 @@ http://localhost:8080/camundaDemo/custom-api/process/instance
  
 as a result you should get the following response
 
-````
+````json
 {
     "processInstanceId": "23",
     "rootBusinessKey": "8d9cc239-ee24-48ad-ad58-50c6a6bcf62e"
@@ -139,7 +147,7 @@ as a result you should get the following response
 
 then you can check the process state by the executing the query
 
-```sql
+````sql
 select  p.ID_,
 		p.PROC_DEF_KEY_,
 		p.STATE_,
@@ -155,7 +163,10 @@ select  p.ID_,
   	left join ACT_ID_GROUP  grp on ms.GROUP_ID_ = grp.ID_
   	where p.BUSINESS_KEY_  = [business-key]
   	order by t.START_TIME_ 
-```
+````
 
+#### Logging
+
+Please, refer to [logging reference](./docs/logging.md)
 
 
