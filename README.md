@@ -8,30 +8,30 @@ git clone https://github.com/mikhailbolshakov/camunda.git
 
 #### Database
 
-Check [database reference](./docs/database.md) 
+Please refer to [database reference](./docs/database.md) to get info about database configuration 
 
 #### Application configuration
 
-Check [application configuration](./dosc/application-configuration.md)
+Please refer to [application configuration](./docs/application-configuration.md) about basic configurations
 
 #### Application installation
 
-Check [application installation](./dosc/installation.md)
+Please refer to [application installation](./docs/installation.md) about how install and run the project
 
 #### Message broker configuration
 
-Check [message broker reference](./docs/message-broker.md)
+Please refer to [message broker reference](./docs/message-broker.md) about message broker configuration
 
 #### Deployment models
 
-Check [process model deployment reference](./docs/deployment.md)
+Please refer to [process model deployment reference](./docs/deployment.md) about how BPMN models are deployed
 
 #### Run the process
 
-Check [process running guide](./docs/process-run.md)
+Please refer to [process running guide](./docs/process-run.md) about how the BPMN process is run
 
 #### Logging
 
-Check [logging reference](./docs/logging.md)
+Please refer to [logging reference](./docs/logging.md) about logging approach 
 
 
