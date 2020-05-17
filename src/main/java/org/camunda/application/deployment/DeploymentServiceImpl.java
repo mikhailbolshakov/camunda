@@ -27,7 +27,7 @@ public class DeploymentServiceImpl extends ApplicationServiceBaseImpl implements
 
     private final ProcessEngine processEngine;
 
-    @Value("${org.camunda.deployment.source-path:#{null}}")
+    //@Value("${org.camunda.deployment.source-path:#{null}}")
     private String deploymentFolder;
 
     @Autowired

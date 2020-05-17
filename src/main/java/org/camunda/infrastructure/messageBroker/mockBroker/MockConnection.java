@@ -1,15 +1,20 @@
 package org.camunda.infrastructure.messageBroker.mockBroker;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.camunda.infrastructure.messageBroker.mockBroker.impl.HandlerSubscriber;
-import org.camunda.infrastructure.messageBroker.mockBroker.impl.MessageProcessor;
-import org.camunda.infrastructure.messageBroker.mockBroker.impl.MockSubscriber;
-import org.camunda.infrastructure.messageBroker.mockBroker.impl.Subscriber;
+import org.camunda.infrastructure.messageBroker.mockBroker.impl.*;
 import org.camunda.repository.messageBroker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,50 +24,107 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
 
     private final static Logger logger = LoggerFactory.getLogger(MockConnection.class.getName());
 
-    private final List<JsonObject> rules;
+    private List<JsonObject> rules = new ArrayList<>();
 
-    private final BlockingQueue<Message> messageQueue = new LinkedBlockingDeque<>();
-    private final CopyOnWriteArrayList<Subscriber> subscribers = new CopyOnWriteArrayList<>();
-    private final MessageProcessor processor = new MessageProcessor(messageQueue, subscribers);
+    private final MessageProcessor processor;
+    private final ResourcePatternResolver resourceLoader;
 
     private final List<MessageBrokerSubscriptionProvider> subscriptionProviders;
 
     private boolean isOpen = false;
 
-    public MockConnection(List<JsonObject> rules,
+    public MockConnection(MessageProcessor messageProcessor,
+                          ResourcePatternResolver resourceLoader,
                           List<MessageBrokerSubscriptionProvider> subscriptionProviders) throws MessageBrokerException {
-        this.rules = rules;
-        this.subscriptionProviders = subscriptionProviders;
 
-        registerMockSubscribers();
+        this.processor = messageProcessor;
+        this.subscriptionProviders = subscriptionProviders;
+        this.resourceLoader = resourceLoader;
     }
 
-    private void registerMockSubscribers() throws MessageBrokerException {
+    private String readFromInputStream(InputStream inputStream) throws IOException {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        }
+        return resultStringBuilder.toString();
+    }
 
-        logger.debug(String.format("[MockMessageBroker] Mock subscribers registration. Found %d ones", rules.size()));
+    public void registerMockSubscribers(String resourcePath) throws MessageBrokerException {
 
-        for(JsonObject rule: rules) {
+        logger.debug(String.format("Read subscribers from resource %s", resourcePath));
 
-            for (JsonElement s : rule.getAsJsonArray("subscribers")) {
+        try {
+            List<JsonObject> scenarios = new ArrayList<>();
 
-                if(!s.isJsonObject())
-                    throw new MessageBrokerException("Rule parsing error");
+            Resource[] resources = resourceLoader.getResources(resourcePath);
 
-                JsonObject subscriber = s.getAsJsonObject();
+            Gson jsonParser = new Gson();
 
-                String topic = subscriber.get("topic").getAsString();
-                JsonObject handler = subscriber.get("handler").getAsJsonObject();
+            for(Resource r: resources) {
 
-                MockSubscriber ms = new MockSubscriber(this, topic, handler);
+                try (InputStream inputStream = r.getInputStream()) {
 
-                ms.validateHandler();
+                    String content = readFromInputStream(inputStream);
+                    JsonObject json = jsonParser.fromJson(content, JsonObject.class);
+                    scenarios.add(json);
 
-                subscribers.add(ms);
-
-                logger.debug(String.format("[MockMessageBroker] %s - Mock subscriber registered", topic));
+                }
 
             }
 
+            registerMockSubscribers(scenarios);
+
+        }
+        catch(Exception e){
+            catchError(e, "Subscribers resource loading error.", true);
+        }
+
+    }
+
+    public void registerMockSubscribers(List<JsonObject> rules) throws MessageBrokerException {
+
+        logger.debug(String.format("Mock subscribers registration. Found %d", rules.size()));
+
+        try {
+
+            if(isOpen)
+                throw new MessageBrokerException("Subscriber registration isn't allowed on open connection");
+
+            this.rules.clear();
+            this.rules.addAll(rules);
+            processor.removeSubscribers();
+
+            for(JsonObject rule: rules) {
+
+                for (JsonElement s : rule.getAsJsonArray("subscribers")) {
+
+                    if(!s.isJsonObject())
+                        throw new MessageBrokerException("Rule parsing error");
+
+                    JsonObject subscriber = s.getAsJsonObject();
+
+                    String topic = subscriber.get("topic").getAsString();
+                    JsonObject handler = subscriber.get("handler").getAsJsonObject();
+
+                    MockSubscriber ms = new MockSubscriber(this, topic, handler);
+
+                    ms.validateHandler();
+
+                    processor.addSubscriber(ms);
+
+                    logger.debug(String.format("[MockMessageBroker] %s - Mock subscriber registered", topic));
+
+                }
+
+            }
+
+        }
+        catch(Exception e){
+            catchError(e, "Subscribers registration error.", true);
         }
 
     }
@@ -107,7 +169,7 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
 
     protected void checkConnectionState(boolean open) throws MessageBrokerException {
         if (open != isOpen())
-            throw new MessageBrokerException("Connection isn't opened");
+            throw new MessageBrokerException("Connection status cannot be changed");
     }
 
     @Override
@@ -117,7 +179,7 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
             if (!isOpen())
                 throw new MessageBrokerException("Can't close not active connection.");
 
-            processor.interrupt();
+            processor.stop();
 
             isOpen = false;
 
@@ -142,7 +204,7 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
             msg.setTopic(request.getSubject());
             msg.setPayload(request.getMessage());
 
-            messageQueue.put(msg);
+            processor.process(msg);
 
             logger.debug(String.format("[MockMessageBroker] Message published.\n Subject: %s.\n Message: %s", request.getSubject(), request.getMessage()));
 
@@ -162,7 +224,7 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
             request.validate();
 
             Subscriber s = new HandlerSubscriber(request.getTopic(), request.getMessageHandler());
-            subscribers.add(s);
+            processor.addSubscriber(s);
 
             logger.debug(String.format("[MockMessageBroker] Subscriber registered. Subject: %s", request.getTopic()));
 
@@ -177,7 +239,4 @@ public class MockConnection implements MessageBrokerConnection, AutoCloseable {
         return subscriptionProviders;
     }
 
-    public boolean notProcessedMessagesExist() {
-        return !processor.isQueueEmpty();
-    }
 }

@@ -25,6 +25,7 @@ public class MockMessageBrokerTest {
         MockConnectionOptions options = new MockConnectionOptions();
 
         options.setScenarioResourcePath("classpath:/messageBroker/mock/*.json");
+        options.setQueueProcessing(true);
 
         MockConnection connection = (MockConnection)mb.prepareConnection(options);
         connection.open();
@@ -70,21 +71,21 @@ public class MockMessageBrokerTest {
             pr.setSubject("test.s-task");
 
             JsonObject message = new JsonObject();
-            JsonObject context = new JsonObject();
+            JsonObject taskContext = new JsonObject();
             JsonObject variables = new JsonObject();
 
             variables.add("variable", new Gson().toJsonTree("value"));
 
-            context.add("variables", variables);
-            message.add("context", context);
-            message.add("taskExecutionId",  new Gson().toJsonTree("123"));
+            message.add("variables", variables);
+            message.add("taskContext", taskContext);
+            taskContext.add("taskId",  new Gson().toJsonTree("123"));
 
             pr.setMessage(message.toString());
             connection.publish(pr);
 
             int waitCounter = 0;
 
-            while(!done || waitCounter > 50){
+            while(!done && waitCounter < 50){
                 Thread.sleep(100);
                 waitCounter += 1;
             }
@@ -112,21 +113,21 @@ public class MockMessageBrokerTest {
             pr.setSubject("test.u-task");
 
             JsonObject message = new JsonObject();
-            JsonObject context = new JsonObject();
+            JsonObject taskContext = new JsonObject();
             JsonObject variables = new JsonObject();
 
             variables.add("variable", new Gson().toJsonTree("value"));
 
-            context.add("variables", variables);
-            message.add("context", context);
-            message.add("taskId",  new Gson().toJsonTree("123"));
+            message.add("variables", variables);
+            message.add("taskContext", taskContext);
+            taskContext.add("taskId",  new Gson().toJsonTree("123"));
 
             pr.setMessage(message.toString());
             connection.publish(pr);
 
             int waitCounter = 0;
 
-            while(!done || waitCounter > 50){
+            while(!done && waitCounter < 50){
                 Thread.sleep(100);
                 waitCounter += 1;
             }

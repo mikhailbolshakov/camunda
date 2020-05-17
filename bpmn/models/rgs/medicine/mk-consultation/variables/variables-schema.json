@@ -1,0 +1,92 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+
+    "client": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Client info",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "User ID of the client. User with this ID must be a camunda user"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Client's phone number"
+        }
+      }
+    },
+
+    "consultation": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Consulting info",
+      "properties": {
+        "communicationType": {
+          "type": "string",
+          "enum": [
+            "platform-chat",
+            "platform-call",
+            "phone-call"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "in-progress"
+          ],
+          "description": "status of the consultation"
+        },
+        "appointment": {
+          "type": "object",
+          "description": "consultation appointment",
+          "properties": {
+             "hangOn": {
+               "type": "boolean",
+               "description": "if a client is ready to hang on for available MK"
+             },
+            "scheduleContact": {
+              "type": "object",
+              "description": "info about scheduled contact",
+              "properties": {
+                "when": {
+                  "type": "string",
+                  "description": "date of contact"
+                },
+                "contactDetails": {
+                  "type": "string",
+                  "description": "details of scheduled contact, like phone number etc."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "assignedMK": {
+      "type": "object",
+      "description": "Info about MK assigned on the task",
+      "additionalProperties": true,
+      "properties": {
+        "found": {
+          "type": "boolean",
+          "description": "if an available MK user found"
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID of MK user assigned on the task"
+        },
+        "currentAvailable": {
+          "type": "boolean",
+          "description": "If the currently assigned MK is available"
+        }
+      }
+    }
+
+  }
+}

@@ -4,8 +4,8 @@ import org.camunda.repository.messageBroker.MessageBrokerConnection;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerSubscribeRequest;
 import org.camunda.repository.messageBroker.MessageBrokerSubscriptionProvider;
-import org.camunda.wf.serviceTask.ServiceTaskCompletionMessageHandler;
-import org.camunda.wf.userTask.UserTaskCompletionMessageHandler;
+import org.camunda.wf.serviceTask.ServiceTaskCompletionHandler;
+import org.camunda.wf.userTask.UserTaskCompletionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,10 +16,10 @@ public class WorkFlowSubscriptionProvider implements MessageBrokerSubscriptionPr
     private final String USER_TASK_COMPLETION_SUBJECT = "user-task.completion";
 
     @Autowired
-    private ServiceTaskCompletionMessageHandler serviceTaskCompletionHandler;
+    private ServiceTaskCompletionHandler serviceTaskCompletionHandler;
 
     @Autowired
-    private UserTaskCompletionMessageHandler userTaskCompletionHandler;
+    private UserTaskCompletionHandler userTaskCompletionHandler;
 
     @Override
     public void subscribe(MessageBrokerConnection connection) throws MessageBrokerException {

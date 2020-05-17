@@ -1,18 +1,22 @@
 package org.camunda.wf.serviceTask;
 
-import com.google.gson.Gson;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.common.base.BaseImpl;
 import org.camunda.repository.messageBroker.Message;
 import org.camunda.repository.messageBroker.MessageHandler;
+import org.camunda.wf.messaging.message.TaskCompletionMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServiceTaskCompletionMessageHandler extends BaseImpl implements MessageHandler {
+public class ServiceTaskCompletionHandler extends BaseImpl implements MessageHandler {
+
+    private final ProcessEngine processEngine;
 
     @Autowired
-    private ProcessEngine processEngine;
+    public ServiceTaskCompletionHandler(ProcessEngine processEngine) {
+        this.processEngine = processEngine;
+    }
 
     @Override
     public void onMessage(Message message) {
@@ -21,10 +25,9 @@ public class ServiceTaskCompletionMessageHandler extends BaseImpl implements Mes
 
             D("Topic: %s \n Message: %s", message.getTopic(), message.getPayload());
 
-            Gson gson = new Gson();
-            ServiceTaskCompleteIncomingMessage completionMessage = gson.fromJson(message.getPayload(), ServiceTaskCompleteIncomingMessage.class);
+            TaskCompletionMessage msg = TaskCompletionMessage.fromJson(message.getPayload(), TaskCompletionMessage.class);
 
-            processEngine.getRuntimeService().signal(completionMessage.getTaskExecutionId(), completionMessage.getVariables());
+            processEngine.getRuntimeService().signal(msg.getCompletionContext().getTaskId(), msg.getVariables());
 
         }
         catch(Exception e) {

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Message context",
+  "required": ["taskId"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "ID of a process instance"
+    }
+  }
+}

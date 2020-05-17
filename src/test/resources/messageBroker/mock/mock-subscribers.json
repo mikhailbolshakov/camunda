@@ -11,7 +11,9 @@
             "topic": "service-task.completion",
             "copySourceVariables": true,
             "message": {
-              "taskExecutionId": "#{context.sourceMessage.taskExecutionId}",
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
               "variables": {
                 "onlineService": {
                   "callTime": 20,
@@ -34,7 +36,9 @@
             "topic": "user-task.completion",
             "copySourceVariables": true,
             "message": {
-              "taskId": "#{context.sourceMessage.taskId}",
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
               "variables": {
                 "onlineService": {
                   "callTime": 20,

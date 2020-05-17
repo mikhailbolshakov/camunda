@@ -3,6 +3,9 @@ package org.camunda.infrastructure.messageBroker.mockBroker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.camunda.common.spring.ApplicationContextProvider;
+import org.camunda.infrastructure.messageBroker.mockBroker.impl.MessageProcessor;
+import org.camunda.infrastructure.messageBroker.mockBroker.impl.MessageProcessorMainThreadImpl;
+import org.camunda.infrastructure.messageBroker.mockBroker.impl.MessageProcessorQueueImpl;
 import org.camunda.repository.messageBroker.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,15 +39,15 @@ public class MockMessageBroker implements MessageBroker {
         this.subscriptionProviders = subscriptionProviders;
     }
 
-    private String readFromInputStream(InputStream inputStream) throws IOException {
-        StringBuilder resultStringBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                resultStringBuilder.append(line).append("\n");
-            }
+    private MessageProcessor createMessageProcessor(MockConnectionOptions options) {
+
+        if(options.getQueueProcessing()) {
+            return new MessageProcessorQueueImpl();
         }
-        return resultStringBuilder.toString();
+        else {
+            return new MessageProcessorMainThreadImpl();
+        }
+
     }
 
     @Override
@@ -68,24 +72,12 @@ public class MockMessageBroker implements MessageBroker {
 
             MockConnectionOptions op = (MockConnectionOptions)options;
 
-            Resource[] resources = resourceLoader.getResources(op.getScenarioResourcePath());
-            Gson jsonParser = new Gson();
+            MockConnection connection = new MockConnection(createMessageProcessor(op), resourceLoader, subscriptionProviders);
 
-            List<JsonObject> scenarios = new ArrayList<>();
+            if(!StringUtils.isEmpty(op.getScenarioResourcePath()))
+                connection.registerMockSubscribers(op.getScenarioResourcePath());
 
-            for(Resource r: resources) {
-
-                try (InputStream inputStream = r.getInputStream()) {
-
-                    String content = readFromInputStream(inputStream);
-                    JsonObject json = jsonParser.fromJson(content, JsonObject.class);
-                    scenarios.add(json);
-
-                }
-
-            }
-
-            return new MockConnection(scenarios, subscriptionProviders);
+            return connection;
         }
         catch(Exception e) {
             String errMsg = String.format("[MockMessageBroker] Prepare connection error. Error: %s", e.getMessage());

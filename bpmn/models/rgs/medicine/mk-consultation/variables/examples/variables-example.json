@@ -1,0 +1,21 @@
+{
+  "client": {
+    "userId": "bb047337-6863-4296-8bd5-4a7ec5803ffe",
+    "phone": "+79032224456"
+  },
+  "consultation": {
+    "communicationType": "platform-chat",
+    "status": "in-progress",
+    "appointment": {
+      "hangOn": false,
+      "scheduleContact": {
+        "when": "2020-01-01T18:30:00.000Z",
+        "contactDetails": "+7(903)567-98-64"
+      }
+    }
+  },
+  "assignedMK": {
+    "found": true,
+    "userId": "f6cb4579-3e62-4d4b-816e-5f2b8ae2dbc3"
+  }
+}

@@ -64,7 +64,7 @@ public class NatsConnection implements MessageBrokerConnection, AutoCloseable {
 
     protected void checkConnectionState(boolean open) throws MessageBrokerException {
         if (open != isOpen())
-            throw new MessageBrokerException("Connection isn't opened");
+            throw new MessageBrokerException("Connection status cannot be changed");
     }
 
     @Override

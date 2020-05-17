@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Variables schema is specified by particular process item",
+  "additionalProperties": true
+}

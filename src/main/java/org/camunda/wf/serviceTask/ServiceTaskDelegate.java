@@ -2,6 +2,11 @@ package org.camunda.wf.serviceTask;
 
 import org.camunda.bpm.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.camunda.bpm.engine.impl.pvm.delegate.ActivityExecution;
+import org.camunda.common.spring.ApplicationContextProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Named;
 
 /*
 
@@ -12,19 +17,21 @@ See implementation example https://github.com/camunda/camunda-bpm-examples/tree/
 
  */
 
+@Component
 public class ServiceTaskDelegate extends AbstractBpmnActivityBehavior {
 
-    private ServiceTaskDelegateImpl delegateImpl;
+    private final ServiceTaskDelegateImpl delegateImpl;
 
-    public ServiceTaskDelegate() {
-        delegateImpl = new ServiceTaskDelegateImpl();
+    @Autowired
+    public ServiceTaskDelegate(ServiceTaskDelegateImpl delegateImpl) {
+        this.delegateImpl = delegateImpl;
     }
 
     public void execute(final ActivityExecution execution) throws Exception {
         delegateImpl.execute(execution);
     }
 
-    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    public void signal(ActivityExecution execution, String signalName, Object signalData) {
         leave(execution);
     }
 

@@ -1,0 +1,22 @@
+{
+  "header": {
+    "messageId": "875fbe7d-9839-4409-93a8-527dd51de1f6",
+    "schemaVersion": "1.0.0",
+    "timestamp": "2020-01-01T18:30:00.000Z"
+  },
+  "processContext": {
+    "processDefId": "rgs.med.mk-consultation",
+    "processId" : "a06f20a7-fb64-4d48-9cc7-cbe86ebac542"
+  },
+  "taskContext": {
+    "taskDefId": "input-registration-data",
+    "taskId": "3232453253"
+  },
+  "userContext": {
+    "formId": "rgs.med.mk-consultation.input-registration-data",
+    "assignedUserId": "bb047337-6863-4296-8bd5-4a7ec5803ffe"
+  },
+  "variables": {
+
+  }
+}

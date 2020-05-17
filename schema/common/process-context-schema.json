@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Message context",
+  "required": ["processDefId", "processId"],
+  "properties": {
+    "processDefId": {
+      "type": "string",
+      "description": "ID of a process definition"
+    },
+    "processId": {
+      "type": "string",
+      "description": "ID of a process instance"
+    }
+  }
+}

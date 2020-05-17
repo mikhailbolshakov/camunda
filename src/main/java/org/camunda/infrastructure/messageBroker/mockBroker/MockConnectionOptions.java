@@ -12,16 +12,20 @@ import org.springframework.util.StringUtils;
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class MockConnectionOptions extends MessageBrokerConnectionOptions {
 
-    @Value("${org.camunda.message-broker.mock.resource-path}")
+    @Value("${org.camunda.message-broker.mock.resource-path:#{null}}")
     private String scenarioResourcePath;
-
     public String getScenarioResourcePath() { return scenarioResourcePath; }
     public void setScenarioResourcePath(String value) { scenarioResourcePath = value; }
 
+    @Value("${org.camunda.message-broker.mock.queue-processing:true}")
+    private boolean queueProcessing;
+    public boolean getQueueProcessing() { return queueProcessing; }
+    public void setQueueProcessing(boolean value) { queueProcessing = value; }
+
     @Override
     public void validate() throws MessageBrokerException {
-        if(StringUtils.isEmpty(scenarioResourcePath))
-            throw new MessageBrokerException("Connection option validation error");
+//        if(StringUtils.isEmpty(scenarioResourcePath))
+//            throw new MessageBrokerException("Connection option validation error");
     }
 
 }

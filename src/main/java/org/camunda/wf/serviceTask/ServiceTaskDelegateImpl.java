@@ -1,18 +1,34 @@
 package org.camunda.wf.serviceTask;
 
+import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.impl.pvm.delegate.ActivityExecution;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.common.base.BaseImpl;
-import org.camunda.common.spring.ApplicationContextProvider;
-import org.camunda.common.wf.message.ExecutionContext;
 import org.camunda.repository.messageBroker.MessageBrokerConnection;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
+import org.camunda.wf.messaging.builder.MessageBuilder;
+import org.camunda.wf.messaging.message.ServiceTaskMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ServiceTaskDelegateImpl extends BaseImpl {
 
-    protected void publishMessage(String subject, String message) throws MessageBrokerException {
+    private final MessageBrokerConnection messageBrokerConnection;
+    private final MessageBuilder messageBuilder;
+    private final ProcessEngine processEngine;
 
-        MessageBrokerConnection messageBrokerConnection = ApplicationContextProvider.getContext().getBean(MessageBrokerConnection.class);
+    @Autowired
+    public ServiceTaskDelegateImpl(ProcessEngine processEngine,
+                                   MessageBrokerConnection messageBrokerConnection,
+                                   MessageBuilder messageBuilder) {
+        this.messageBrokerConnection = messageBrokerConnection;
+        this.messageBuilder = messageBuilder;
+        this.processEngine = processEngine;
+    }
+
+    private void publishMessage(String subject, String message) throws MessageBrokerException {
 
         MessageBrokerPublishRequest request = new MessageBrokerPublishRequest();
         request.setSubject(subject);
@@ -22,24 +38,36 @@ public class ServiceTaskDelegateImpl extends BaseImpl {
 
     }
 
-    public void execute(ActivityExecution execution) throws Exception {
+    private String getTopic(ActivityExecution execution) {
 
-        D(String.format("executionId = %s", execution.getId()));
+        ProcessDefinition pd = processEngine
+                .getRepositoryService()
+                .createProcessDefinitionQuery()
+                .processDefinitionId(execution.getProcessDefinitionId())
+                .singleResult();
+
+        return String.format("service-task.%s.%s", pd.getKey(), execution.getCurrentActivityId());
+    }
+
+    public void execute(ActivityExecution execution) {
+
+        D("executionId = %s", execution.getId());
 
         try {
 
-            // TODO: use factory or builder
-            ServiceTaskOutgoingMessage msg = new ServiceTaskOutgoingMessage();
+            String msg = messageBuilder
+                    .withMessageType(ServiceTaskMessage.class)
+                    .withUniqueID()
+                    .withProcess(execution.getProcessDefinitionId(), execution.getProcessInstanceId())
+                    .withTask(execution.getCurrentActivityId(), execution.getId())
+                    .withVariables(execution.getVariables())
+                    .buildAsString();
 
-            ExecutionContext ctx = msg.getContext();
-            ctx.setProcessDefId(execution.getProcessDefinitionId());
-            ctx.setProcessId(execution.getProcessInstanceId());
-            ctx.setVariables(execution.getVariables());
-            msg.setTaskExecutionId(execution.getId());
 
-            D("Send message: %s", msg.toString());
+            String topic = getTopic(execution);
+            publishMessage(topic, msg);
 
-            publishMessage(execution.getCurrentActivityId(), msg.toString());
+            D("Sent. Topic: %s.\n Payload: %s", topic, msg);
 
         }
         catch(Exception e) {

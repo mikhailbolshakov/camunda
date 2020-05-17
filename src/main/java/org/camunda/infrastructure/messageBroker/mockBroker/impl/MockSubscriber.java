@@ -90,7 +90,7 @@ public class MockSubscriber implements Subscriber {
 
                 if (action.get("copySourceVariables").getAsBoolean()) {
 
-                    JsonObject sourceVariables = sourceMessage.get("context").getAsJsonObject().get("variables").getAsJsonObject();
+                    JsonObject sourceVariables = sourceMessage.get("variables").getAsJsonObject();
 
                     // copy source variables
                     for(Map.Entry<String, JsonElement> v: sourceVariables.entrySet()) {

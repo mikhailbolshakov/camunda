@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["header", "processContext", "taskContext", "variables"],
+  "properties": {
+
+    "header": {
+      "$ref": "common/header-schema.json"
+    },
+
+    "processContext": {
+      "$ref": "common/process-context-schema.json"
+    },
+
+    "taskContext": {
+      "$ref": "common/task-context-schema.json"
+    },
+
+    "userContext": {
+      "$ref": "common/user-task-context-schema.json"
+    },
+
+    "variables": {
+      "$ref": "common/variables-schema.json"
+    }
+
+  }
+}

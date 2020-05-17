@@ -1,8 +1,9 @@
-package org.camunda.common.wf.message;
+package org.camunda.wf.messaging.common;
 
+import java.util.Date;
 import java.util.UUID;
 
-public class MessageHeader {
+public class Header {
 
     private String messageId;
     public String getMessageId() {return messageId;}
@@ -12,8 +13,8 @@ public class MessageHeader {
     public String getSchemaVersion() {return schemaVersion;}
     public void setSchemaVersion(String value) {schemaVersion = value;}
 
-    public MessageHeader() {
-        messageId = UUID.randomUUID().toString();
-        schemaVersion = "v1";
-    }
+    private Date timestamp;
+    public Date getTimestamp() {return timestamp;}
+    public void setTimestamp(Date value) {timestamp = value;}
+
 }

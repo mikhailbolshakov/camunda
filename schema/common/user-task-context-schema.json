@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "User task context",
+  "properties": {
+    "formId": {
+      "type": "string",
+      "description": "Specifies a form unique key"
+    },
+    "assignedUserId": {
+      "type": "string",
+      "description": "Id of a user assigned on the task"
+    }
+  }
+}
