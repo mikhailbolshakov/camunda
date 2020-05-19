@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+  <bpmn:process id="test-process" name="Тестовый процесс" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>SequenceFlow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="end1">
+      <bpmn:incoming>Flow_1l1zl4u</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow1" sourceRef="start" targetRef="script" />
+    <bpmn:sequenceFlow id="Flow_0qjbwkg" sourceRef="script" targetRef="check" />
+    <bpmn:scriptTask id="script" scriptFormat="javascript">
+      <bpmn:incoming>SequenceFlow1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qjbwkg</bpmn:outgoing>
+      <bpmn:script>var utility = org.camunda.wf.utility.ScriptUtility;
+
+var obj = { "internal": {"v": true} };
+
+execution.setVariable('var', utility.V(obj));</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="check">
+      <bpmn:incoming>Flow_0qjbwkg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l1zl4u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1qql9hr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1l1zl4u" sourceRef="check" targetRef="end1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{var.internal.v}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="end2">
+      <bpmn:incoming>Flow_1qql9hr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1qql9hr" sourceRef="check" targetRef="end2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{var.internal.v}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="test-process">
+      <bpmndi:BPMNEdge id="Flow_1qql9hr_di" bpmnElement="Flow_1qql9hr">
+        <di:waypoint x="630" y="145" />
+        <di:waypoint x="630" y="230" />
+        <di:waypoint x="762" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l1zl4u_di" bpmnElement="Flow_1l1zl4u">
+        <di:waypoint x="655" y="120" />
+        <di:waypoint x="762" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qjbwkg_di" bpmnElement="Flow_0qjbwkg">
+        <di:waypoint x="510" y="120" />
+        <di:waypoint x="605" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_08va5r8_di" bpmnElement="SequenceFlow1">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="410" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="337.5" y="110" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0fkea3f_di" bpmnElement="end1">
+        <dc:Bounds x="762" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="760" y="138" width="41" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mio37i_di" bpmnElement="script">
+        <dc:Bounds x="410" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ntnmz7_di" bpmnElement="check" isMarkerVisible="true">
+        <dc:Bounds x="605" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1uza6up_di" bpmnElement="end2">
+        <dc:Bounds x="762" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

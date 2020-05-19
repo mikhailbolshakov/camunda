@@ -7,6 +7,7 @@ import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
 import org.camunda.bpm.engine.spring.SpringProcessEngineServicesConfiguration;
+import org.camunda.spin.plugin.impl.SpinProcessEnginePlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @Import(SpringProcessEngineServicesConfiguration.class)
@@ -52,6 +55,8 @@ public class CamundaConfiguration {
 
         config.setJobExecutorActivate(true);
         config.setMetricsEnabled(false);
+
+        config.setProcessEnginePlugins(Collections.singletonList(new SpinProcessEnginePlugin()));
 
         logger.debug("[CamundaConfiguration] Process engine configuration");
 

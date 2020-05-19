@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+
+    "client": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Client info",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "User ID of the client. User with this ID must be a camunda user"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Client's phone number"
+        }
+      }
+    },
+
+    "clientAuth": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "client authorization",
+      "properties": {
+        "auth": {
+          "type": "boolean",
+          "description": "if a client is authorized"
+        },
+        "generateCode": {
+          "type": "boolean",
+          "description": "if auth code generation is required"
+        }
+      }
+    },
+
+    "assignedMK": {
+      "type": "object",
+      "description": "Info about MK assigned on the task",
+      "additionalProperties": true,
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID of MK user assigned on the task"
+        }
+      }
+    },
+
+    "opd": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Agreement on personal data processing",
+      "properties": {
+        "confirmed": {
+          "type": "boolean",
+          "description": "if agreement is confirmed"
+        },
+        "confirmationType": {
+          "type": "string",
+          "description": "how a client is going to give a confirmation",
+          "enum": ["platform", "phone"]
+        }
+      }
+    }
+  }
+}

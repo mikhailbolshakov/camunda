@@ -63,7 +63,6 @@ public class ServiceTaskDelegateImpl extends BaseImpl {
                     .withVariables(execution.getVariables())
                     .buildAsString();
 
-
             String topic = getTopic(execution);
             publishMessage(topic, msg);
 

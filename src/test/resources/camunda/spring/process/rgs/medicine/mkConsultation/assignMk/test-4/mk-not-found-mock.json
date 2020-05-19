@@ -1,0 +1,85 @@
+{
+  "subscribers": [
+    {
+      "topic": "service-task.rgs.med.mk-consultation.assign-mk.find-mk",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "client": {
+                  "userId": "222",
+                  "phone": "+79032224456"
+                },
+                "assignedMK": {
+                  "found": false
+                },
+                "consultation": {
+                  "communicationType": "platform-chat",
+                  "status": "pending",
+                  "appointment": {
+                    "hangOn": false,
+                    "scheduleContact": {
+                      "when": "2025-01-01T18:30:00.000Z",
+                      "contactDetails": "+7(903)567-98-64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "user-task.rgs.med.mk-consultation.assign-mk.schedule-next-contact",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "consultation": {
+                  "communicationType": "platform-chat",
+                  "status": "pending",
+                  "appointment": {
+                    "hangOn": false,
+                    "scheduleContact": {
+                      "when": "2025-01-01T18:30:00.000Z",
+                      "contactDetails": "+7(903)567-98-64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

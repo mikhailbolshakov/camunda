@@ -1,0 +1,117 @@
+{
+  "subscribers": [
+    {
+      "topic": "service-task.rgs.med.client-opd.check-opd",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "opd": {
+                  "confirmed": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "user-task.rgs.med.client-opd.opd-type",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "opd": {
+                  "confirmationType": "phone"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "user-task.rgs.med.client-opd.opd-by-phone",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "service-task.rgs.med.client-opd.save-opd",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "opd": {
+                  "confirmed": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

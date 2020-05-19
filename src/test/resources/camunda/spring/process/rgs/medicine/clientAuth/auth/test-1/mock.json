@@ -1,0 +1,33 @@
+{
+  "subscribers": [
+    {
+      "topic": "service-task.rgs.med.client-auth-mk.get-client",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "clientAuth": {
+                  "auth": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -68,6 +68,12 @@ mvn clean package
 
 as a result of a successful build you should find ``target`` folder and ``camundaDemo.war`` file inside
 
+to build application without test running 
+
+````
+mvn clean package -DskipTests
+````
+
 * build a docker image 
 
 ````
