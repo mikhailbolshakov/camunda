@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1lqj2sw" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+  <bpmn:process id="Process_10pz39q" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1o9x85c</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1gc21xz" messageRef="Message_1ch74bk" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_16065jo">
+      <bpmn:incoming>Flow_1o9x85c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1o9x85c" sourceRef="StartEvent_1" targetRef="Event_16065jo" />
+  </bpmn:process>
+  <bpmn:message id="Message_1ch74bk" name="rgs.med.client-feedback.create-client-task.message" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_10pz39q">
+      <bpmndi:BPMNEdge id="Flow_1o9x85c_di" bpmnElement="Flow_1o9x85c">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="362" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1fwdvot_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16065jo_di" bpmnElement="Event_16065jo">
+        <dc:Bounds x="362" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

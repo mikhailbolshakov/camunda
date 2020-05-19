@@ -22,10 +22,10 @@ public class ClientOPDTests extends BaseProcessTest {
 
         Map<String, Object> client = new HashMap<>();
         client.put("userId", "222");
+        client.put("phone",  "+79032514432");
 
         Map<String, Object> assignedMK = new HashMap<>();
         assignedMK.put("userId",  "111");
-        assignedMK.put("phone",  "+79032514432");
 
         variables.put("client", client);
         variables.put("assignedMK", assignedMK);

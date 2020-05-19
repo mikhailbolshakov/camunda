@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = UrlPathConsts.rootPath + "/process")
-public class ProcessServiceController implements ProcessService {
+public class ProcessServiceController {
 
     private final ProcessService processservice;
 
@@ -18,7 +18,6 @@ public class ProcessServiceController implements ProcessService {
         this.processservice = processservice;
     }
 
-    @Override
     @ResponseBody
     @PostMapping(value = "/instance")
     public StartProcessRs startProcess(@RequestBody StartProcessRq rq) {

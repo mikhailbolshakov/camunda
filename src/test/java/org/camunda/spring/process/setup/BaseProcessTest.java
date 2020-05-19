@@ -2,6 +2,8 @@ package org.camunda.spring.process.setup;
 
 
 import org.camunda.Application;
+import org.camunda.api.process.dto.StartProcessRq;
+import org.camunda.api.process.service.ProcessService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.history.HistoricActivityInstance;
@@ -32,10 +34,22 @@ import java.util.Map;
 public abstract class BaseProcessTest {
 
     @Autowired
+    protected ProcessService processService;
+
+    @Autowired
     protected ProcessEngine processEngine;
 
     @Autowired
     protected MessageBrokerConnection connection;
+
+    protected String startProcess(String processKey, Map<String, Object> variables) {
+        StartProcessRq rq = new StartProcessRq();
+        rq.processKey = processKey;
+        rq.variables = variables;
+
+        return processService.startProcess(rq).processInstanceId;
+
+    }
 
     protected void setMessageBrokerMockResource(String resourcePath) throws MessageBrokerException {
         if(connection.isOpen())

@@ -1,0 +1,23 @@
+{
+  "client": {
+    "userId": "123",
+    "phone": "+79053457856"
+  },
+
+  "assignedMK": {
+    "userId": "222"
+  },
+
+  "feedback": {
+    "contactEstablished": true,
+    "osProvided": false,
+    "nextContactAgreed": true,
+    "clientTask": false,
+    "isRgsClient": true,
+    "scheduleContact": {
+      "when": "2020-01-01T18:30:00.000Z",
+      "contactDetails": "phone +79034443218"
+    }
+  }
+
+}

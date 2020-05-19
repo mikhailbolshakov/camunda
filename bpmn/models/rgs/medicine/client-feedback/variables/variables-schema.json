@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+
+    "client": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Client info",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "User ID of the client. User with this ID must be a camunda user"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Client's phone number"
+        }
+      }
+    },
+
+    "feedback": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Info about client feedback",
+      "properties": {
+        "contactEstablished": {
+          "type": "boolean",
+          "description": "if a contact with client has been established"
+        },
+        "osProvided": {
+          "type": "boolean",
+          "description": "if client has provided OS"
+        },
+        "nextContactAgreed": {
+          "type": "boolean",
+          "description": "if client is agreed for the next contact"
+        },
+        "clientTask": {
+          "type": "boolean",
+          "description": "if a client task has to be created"
+        },
+        "scheduleContact": {
+          "type": "object",
+          "description": "Info about next schedulled contact",
+          "properties": {
+            "when": {
+              "type": "string",
+              "description": "date-time of the next contact"
+            },
+            "contactDetails": {
+              "type": "string",
+              "description": "details about schedulled contact"
+            }
+          }
+        },
+        "isRgsClient": {
+          "type": "boolean",
+          "description": "if client is a RGS client"
+        }
+      }
+    }
+
+  }
+}

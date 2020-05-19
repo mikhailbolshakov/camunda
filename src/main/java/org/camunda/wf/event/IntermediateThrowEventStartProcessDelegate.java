@@ -20,6 +20,11 @@ public class IntermediateThrowEventStartProcessDelegate extends BaseImpl impleme
         D("MessageName = %s", messageName);
 
         RuntimeService runtimeService = execution.getProcessEngineServices().getRuntimeService();
+
+        runtimeService
+                .createProcessInstanceQuery()
+                .processInstanceBusinessKey(execution.getProcessInstance().getBusinessKey());
+
         ProcessInstance procInst = runtimeService.startProcessInstanceByMessage(messageName,
                                                                                 execution.getProcessInstance().getBusinessKey(),
                                                                                 execution.getVariables());
