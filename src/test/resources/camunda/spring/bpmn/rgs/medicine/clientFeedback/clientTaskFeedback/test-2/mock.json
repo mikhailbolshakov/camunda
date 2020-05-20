@@ -1,7 +1,7 @@
 {
   "subscribers": [
     {
-      "topic": "test.s-task",
+      "topic": "camunda.service-task.rgs.med.client-task-feedback.get-client",
       "handler": {
         "type": "serviceTask",
         "delay": 2,
@@ -11,13 +11,17 @@
             "topic": "camunda.service-task.completion",
             "copySourceVariables": true,
             "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
               "completionContext": {
                 "taskId": "#{context.sourceMessage.taskContext.taskId}"
               },
               "variables": {
-                "onlineService": {
-                  "callTime": 20,
-                  "problemSolved": "#{context.random.nextBoolean()}"
+                "feedback": {
+                  "isRgsClient": false
                 }
               }
             }
@@ -26,23 +30,27 @@
       }
     },
     {
-      "topic": "test.u-task",
+      "topic": "camunda.service-task.rgs.med.client-task-feedback.delete-os",
       "handler": {
-        "type": "userTask",
+        "type": "serviceTask",
         "delay": 2,
         "actions": [
           {
             "type": "publish",
-            "topic": "camunda.user-task.completion",
+            "topic": "camunda.service-task.completion",
             "copySourceVariables": true,
             "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
               "completionContext": {
                 "taskId": "#{context.sourceMessage.taskContext.taskId}"
               },
               "variables": {
-                "onlineService": {
-                  "callTime": 20,
-                  "problemSolved": "#{context.random.nextBoolean()}"
+                "feedback": {
+                  "osProvided": false
                 }
               }
             }

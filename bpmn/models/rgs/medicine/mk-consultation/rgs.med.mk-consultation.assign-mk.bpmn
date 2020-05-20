@@ -87,7 +87,7 @@
     <bpmn:boundaryEvent id="sla-timer" attachedToRef="set-in-progress">
       <bpmn:outgoing>Flow_0ichljl</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1v1hqgt">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P2D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0nb8itq" sourceRef="appointment-timer" targetRef="init" />
@@ -154,15 +154,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1vz1h66_di" bpmnElement="Lane_1vz1h66" isHorizontal="true">
         <dc:Bounds x="182" y="80" width="1218" height="920" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_11w7eo2_di" bpmnElement="TextAnnotation_11w7eo2">
-        <dc:Bounds x="550" y="760" width="192" height="30" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0bu6zqb_di" bpmnElement="TextAnnotation_0bu6zqb">
-        <dc:Bounds x="690" y="630" width="100" height="68" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_178yplu_di" bpmnElement="TextAnnotation_178yplu">
-        <dc:Bounds x="760" y="820" width="100" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0uzb536_di" bpmnElement="Flow_0uzb536">
         <di:waypoint x="410" y="464" />
@@ -300,6 +291,26 @@
       <bpmndi:BPMNShape id="TextAnnotation_1sk65cg_di" bpmnElement="TextAnnotation_1sk65cg">
         <dc:Bounds x="870" y="540" width="124" height="40" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_11w7eo2_di" bpmnElement="TextAnnotation_11w7eo2">
+        <dc:Bounds x="550" y="760" width="192" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0bu6zqb_di" bpmnElement="TextAnnotation_0bu6zqb">
+        <dc:Bounds x="690" y="630" width="100" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_178yplu_di" bpmnElement="TextAnnotation_178yplu">
+        <dc:Bounds x="760" y="820" width="100" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pbftoh_di" bpmnElement="sla-timer">
+        <dc:Bounds x="602" y="609" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1pzlap1_di" bpmnElement="Association_1pzlap1">
+        <di:waypoint x="726" y="232" />
+        <di:waypoint x="790" y="199" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1km2hj2_di" bpmnElement="Association_1km2hj2">
+        <di:waypoint x="788" y="584" />
+        <di:waypoint x="870" y="570" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1eng7t8_di" bpmnElement="Association_1eng7t8">
         <di:waypoint x="628" y="736" />
         <di:waypoint x="640" y="760" />
@@ -311,17 +322,6 @@
       <bpmndi:BPMNEdge id="Association_0bqgdpk_di" bpmnElement="Association_0bqgdpk">
         <di:waypoint x="736" y="898" />
         <di:waypoint x="760" y="884" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1pbftoh_di" bpmnElement="sla-timer">
-        <dc:Bounds x="602" y="609" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1pzlap1_di" bpmnElement="Association_1pzlap1">
-        <di:waypoint x="726" y="232" />
-        <di:waypoint x="790" y="199" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1km2hj2_di" bpmnElement="Association_1km2hj2">
-        <di:waypoint x="788" y="584" />
-        <di:waypoint x="870" y="570" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+
+  "properties": {
+
+    "header": {
+      "$ref": "common/header-schema.json"
+    },
+
+    "startProcessContext": {
+      "$ref": "./common/start-process-context-schema.json"
+    },
+
+    "variables": {
+      "$ref": "common/variables-schema.json"
+    }
+
+  }
+}

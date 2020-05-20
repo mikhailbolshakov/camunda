@@ -35,14 +35,14 @@
       <bpmn:outgoing>Flow_124iwdj</bpmn:outgoing>
       <bpmn:outgoing>Flow_0yyfap8</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="client-os" name="Запросить ОС">
+    <bpmn:userTask id="client-os" name="Запросить ОС" camunda:assignee="#{assignedMK.userId}">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_03fywzq</bpmn:incoming>
       <bpmn:outgoing>Flow_0kb5z3l</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="client-contact" name="Установить связь с клиентом">
+    <bpmn:userTask id="client-contact" name="Установить связь с клиентом" camunda:assignee="#{assignedMK.userId}">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
       </bpmn:extensionElements>
@@ -55,7 +55,7 @@
       <bpmn:outgoing>Flow_03fywzq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1oikolm</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="set-client-next-contact" name="Запросить время / тип повторного контакта">
+    <bpmn:userTask id="set-client-next-contact" name="Запросить время / тип повторного контакта" camunda:assignee="#{assignedMK.userId}">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
       </bpmn:extensionElements>
@@ -70,7 +70,7 @@
         <bpmn:timeDate xsi:type="bpmn:tFormalExpression">#{feedback.scheduleContact.when}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:userTask id="set-next-contact" name="Установить время повторного контакта">
+    <bpmn:userTask id="set-next-contact" name="Установить время повторного контакта" camunda:assignee="#{assignedMK.userId}">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
       </bpmn:extensionElements>
@@ -184,9 +184,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_154qicz_di" bpmnElement="Lane_154qicz" isHorizontal="true">
         <dc:Bounds x="182" y="80" width="1918" height="820" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0ape0xs_di" bpmnElement="TextAnnotation_0ape0xs">
-        <dc:Bounds x="1550" y="440" width="99.99156545209178" height="66.12685560053981" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_02ny4bb_di" bpmnElement="Flow_02ny4bb">
         <di:waypoint x="940" y="360" />
@@ -376,14 +373,17 @@
       <bpmndi:BPMNShape id="Event_0m02w6m_di" bpmnElement="end">
         <dc:Bounds x="812" y="272" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1x8u9hd_di" bpmnElement="rgs-task-event">
+        <dc:Bounds x="1512" y="522" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0a94xos_di" bpmnElement="TextAnnotation_0a94xos">
         <dc:Bounds x="1100" y="730" width="100" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_09dk7zl_di" bpmnElement="TextAnnotation_09dk7zl">
         <dc:Bounds x="1100" y="200" width="99.99156545209178" height="52.99004723346829" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1x8u9hd_di" bpmnElement="rgs-task-event">
-        <dc:Bounds x="1512" y="522" width="36" height="36" />
+      <bpmndi:BPMNShape id="TextAnnotation_0ape0xs_di" bpmnElement="TextAnnotation_0ape0xs">
+        <dc:Bounds x="1550" y="440" width="99.99156545209178" height="66.12685560053981" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_11wjx8y_di" bpmnElement="Association_11wjx8y">
         <di:waypoint x="1077" y="745" />

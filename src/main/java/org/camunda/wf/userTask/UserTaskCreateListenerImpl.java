@@ -48,7 +48,7 @@ public class UserTaskCreateListenerImpl extends BaseImpl {
                 .processDefinitionId(delegateTask.getProcessDefinitionId())
                 .singleResult();
 
-        return String.format("user-task.%s.%s", pd.getKey(), delegateTask.getTaskDefinitionKey());
+        return String.format("camunda.user-task.%s.%s", pd.getKey(), delegateTask.getTaskDefinitionKey());
     }
 
     public void notify(DelegateTask delegateTask) {

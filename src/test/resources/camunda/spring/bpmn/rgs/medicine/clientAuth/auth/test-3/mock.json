@@ -1,0 +1,118 @@
+{
+  "subscribers": [
+    {
+      "topic": "camunda.service-task.rgs.med.client-auth-mk.get-client",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "clientAuth": {
+                  "auth": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.user-task.rgs.med.client-auth-mk.reg-data",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "clientAuth": {
+                  "generateCode": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.service-task.rgs.med.client-auth-mk.code-send",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.user-task.rgs.med.client-auth-mk.auth-by-code",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "clientAuth": {
+                  "auth": true,
+                  "generateCode": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

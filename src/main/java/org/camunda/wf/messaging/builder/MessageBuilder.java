@@ -46,7 +46,6 @@ public class MessageBuilder {
         MessageBase msgBase = message.get();
 
         if(!type.isAssignableFrom(msgBase.getClass()))
-        //if(!msgBase.getClass().isAssignableFrom(type))
             throw new IllegalArgumentException("This method cannot be applied to the given message type");
 
         return (T) msgBase;

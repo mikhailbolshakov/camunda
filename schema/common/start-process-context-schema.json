@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Start process context",
+  "required": ["taskId"],
+  "properties": {
+    "processKey": {
+      "type": "string",
+      "description": "Key of the process to start"
+    }
+  }
+}

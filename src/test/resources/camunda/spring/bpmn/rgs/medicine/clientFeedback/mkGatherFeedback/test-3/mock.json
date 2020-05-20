@@ -1,0 +1,152 @@
+{
+  "subscribers": [
+    {
+      "topic": "camunda.service-task.rgs.med.mk-gather-feedback.get-client",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "testContext": {
+                  "firstRun": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.user-task.rgs.med.mk-gather-feedback.client-contact",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "feedback": {
+                  "contactEstablished": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.user-task.rgs.med.mk-gather-feedback.client-os",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "feedback": {
+                  "osProvided": "#{context.sourceMessage.variables.testContext.firstRun ? false : true}",
+                  "nextContactAgreed": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.user-task.rgs.med.mk-gather-feedback.set-client-next-contact",
+      "handler": {
+        "type": "userTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.user-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+                "feedback": {
+                  "scheduleContact": {
+                    "when": "2030-01-01T18:30:00.000Z"
+                  }
+                },
+                "testContext": {
+                  "firstRun": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "topic": "camunda.service-task.rgs.med.mk-gather-feedback.close-contact",
+      "handler": {
+        "type": "serviceTask",
+        "delay": 2,
+        "actions": [
+          {
+            "type": "publish",
+            "topic": "camunda.service-task.completion",
+            "copySourceVariables": true,
+            "message": {
+              "header": {
+                "messageId": "123",
+                "schemaVersion": "1.0.0",
+                "timestamp": "2020-01-01T18:30:00.000Z"
+              },
+              "completionContext": {
+                "taskId": "#{context.sourceMessage.taskContext.taskId}"
+              },
+              "variables": {
+               }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

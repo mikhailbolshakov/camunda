@@ -62,7 +62,7 @@ public class MockMessageBrokerTest {
         try(MockConnection connection = createAndOpenConnection()) {
 
             MessageBrokerSubscribeRequest rq = new MessageBrokerSubscribeRequest();
-            rq.setTopic("service-task.completion");
+            rq.setTopic("camunda.service-task.completion");
 
             rq.setMessageHandler((msg) -> { done = true; });
             connection.subscribe(rq);
@@ -104,7 +104,7 @@ public class MockMessageBrokerTest {
         try(MockConnection connection = createAndOpenConnection()) {
 
             MessageBrokerSubscribeRequest rq = new MessageBrokerSubscribeRequest();
-            rq.setTopic("user-task.completion");
+            rq.setTopic("camunda.user-task.completion");
 
             rq.setMessageHandler((msg) -> { done = true; });
             connection.subscribe(rq);

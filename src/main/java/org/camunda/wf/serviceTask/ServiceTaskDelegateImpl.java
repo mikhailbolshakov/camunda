@@ -46,7 +46,7 @@ public class ServiceTaskDelegateImpl extends BaseImpl {
                 .processDefinitionId(execution.getProcessDefinitionId())
                 .singleResult();
 
-        return String.format("service-task.%s.%s", pd.getKey(), execution.getCurrentActivityId());
+        return String.format("camunda.service-task.%s.%s", pd.getKey(), execution.getCurrentActivityId());
     }
 
     public void execute(ActivityExecution execution) {
