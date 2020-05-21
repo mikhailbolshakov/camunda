@@ -1,0 +1,23 @@
+  {
+    "name": "External service task",
+    "id": "org.camunda.wf.modeler.template.service-task.external",
+    "appliesTo": [ "bpmn:ServiceTask" ],
+    "properties": [
+      {
+        "label": "Implementation Type",
+        "type": "Hidden",
+        "value": "org.camunda.wf.serviceTask.ServiceTaskDelegate",
+        "editable": false,
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "asyncBefore": true,
+      "asyncAfter": true,
+      "id": true,
+      "name": true
+    }
+  }

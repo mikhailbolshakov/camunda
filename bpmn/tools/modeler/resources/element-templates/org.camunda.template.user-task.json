@@ -1,0 +1,16 @@
+{
+  "name": "External user task",
+  "id": "org.camunda.wf.modeler.template.user-task.external",
+  "appliesTo": [ "bpmn:UserTask" ],
+  "properties": [],
+  "entriesVisible": {
+    "asyncBefore": true,
+    "asyncAfter": true,
+    "candidateGroups": true,
+    "assignee": true,
+    "dueDate": true,
+    "followUpDate": true,
+    "id": true,
+    "name": true
+  }
+}

@@ -1,13 +1,11 @@
 package org.camunda.bootstrapper;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.spring.ProcessEngineFactoryBean;
 import org.camunda.bpm.engine.spring.SpringProcessEngineConfiguration;
 import org.camunda.bpm.engine.spring.SpringProcessEngineServicesConfiguration;
 import org.camunda.spin.plugin.impl.SpinProcessEnginePlugin;
+import org.camunda.wf.bpmn.plugin.ProcessEngineDeploymentPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 @Configuration
 @Import(SpringProcessEngineServicesConfiguration.class)
@@ -31,19 +28,29 @@ public class CamundaConfiguration {
 
     private final static Logger logger = LoggerFactory.getLogger(CamundaConfiguration.class.getName());
 
-    @Autowired
-    private DataSource dataSource;
-
     @Value("${org.camunda.autodeployment-path:classpath:/processes/*.bpmn}")
     private String autoDeploymentPath;
     @Value("${org.camunda.autodeployment:false}")
     private Boolean autoDeployment;
 
+    private final DataSource dataSource;
+    private final ResourcePatternResolver resourceLoader;
+    private final ProcessEngineDeploymentPlugin deploymentPlugin;
+
     @Autowired
-    private ResourcePatternResolver resourceLoader;
+    public CamundaConfiguration(DataSource dataSource,
+                                ResourcePatternResolver resourceLoader,
+                                ProcessEngineDeploymentPlugin deploymentPlugin) {
+        this.dataSource = dataSource;
+        this.resourceLoader = resourceLoader;
+        this.deploymentPlugin = deploymentPlugin;
+    }
 
     @Bean
     public SpringProcessEngineConfiguration processEngineConfiguration() throws IOException {
+
+        logger.debug("[CamundaConfiguration] Process engine configuration");
+
         SpringProcessEngineConfiguration config = new SpringProcessEngineConfiguration();
 
         config.setDataSource(dataSource);
@@ -56,9 +63,8 @@ public class CamundaConfiguration {
         config.setJobExecutorActivate(true);
         config.setMetricsEnabled(false);
 
-        config.setProcessEnginePlugins(Collections.singletonList(new SpinProcessEnginePlugin()));
-
-        logger.debug("[CamundaConfiguration] Process engine configuration");
+        config.setProcessEnginePlugins(Arrays.asList(new SpinProcessEnginePlugin(),
+                                                     deploymentPlugin));
 
         if (autoDeployment)
             autoDeployment(config);

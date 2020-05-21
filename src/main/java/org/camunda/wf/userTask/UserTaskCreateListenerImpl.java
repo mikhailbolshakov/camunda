@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.common.base.BaseImpl;
 import org.camunda.common.spring.ApplicationContextProvider;
+import org.camunda.infrastructure.messageBroker.mockBroker.MockConnectionOptions;
 import org.camunda.repository.messageBroker.MessageBrokerConnection;
 import org.camunda.repository.messageBroker.MessageBrokerException;
 import org.camunda.repository.messageBroker.MessageBrokerPublishRequest;
@@ -19,7 +20,7 @@ public class UserTaskCreateListenerImpl extends BaseImpl {
 
     private final MessageBrokerConnection messageBrokerConnection;
     private final MessageBuilder messageBuilder;
-    private final ProcessEngine processEngine;
+    private ProcessEngine processEngine;
 
     @Autowired
     public UserTaskCreateListenerImpl(ProcessEngine processEngine,

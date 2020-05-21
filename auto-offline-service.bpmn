@@ -12,13 +12,13 @@
     <bpmn:laneSet id="LaneSet_1w6sr7b">
       <bpmn:lane id="Lane_0gnmo9b" name="client">
         <bpmn:flowNodeRef>auto.mobile-service.client.start.event</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>auto.mobile-service.client.car-details.s-task</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.confirm-rq.u-task</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.send-rq-to-service.event</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.waiting-for-fdbk.event</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.end.event</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.accident-details.u-task</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>auto.mobile-service.client.give-fdbk.u-task</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>auto.mobile-service.client.car-details.s-task</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_0ev6x9w" sourceRef="auto.mobile-service.client.start.event" targetRef="auto.mobile-service.client.car-details.s-task" />

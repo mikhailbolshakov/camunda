@@ -84,4 +84,16 @@ public class SimpleTaskTest extends BaseProcessTest {
         assertExecutionPath(pi.getId(), "start -> script -> check -> end1");
     }
 
+    @Test
+    public void userTask_ExternalTemplate_Test() throws MessageBrokerException {
+
+        setMessageBrokerMockResource("classpath:/camunda/spring/bpmn/sample/simpleTaskTests/mock-subscribers.json");
+        deployResource("camunda/spring/bpmn/sample/simpleTaskTests/userTask-gen-listener.bpmn");
+
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("user-task-process");
+
+        assertProcessState(pi.getId(), "COMPLETED");
+    }
+
 }
