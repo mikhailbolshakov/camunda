@@ -9,10 +9,10 @@ services:
       context: ./
 
       # uncomment to build  without Maven installed
-      #dockerfile: Dockerfile.maven-build
+      dockerfile: Dockerfile.maven-build
 
       # requires Maven installed
-      dockerfile: Dockerfile
+      #dockerfile: Dockerfile
     env_file:
       - .env
     volumes:

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0eug5i2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+  <bpmn:process id="Process_12b3yxw" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_1lvm7la" sourceRef="start" targetRef="assign" />
+    <bpmn:serviceTask id="assign" name="Назначить специалиста РГС" camunda:modelerTemplate="org.camunda.wf.modeler.template.service-task.external" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1lvm7la</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i2xf8u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1i2xf8u" sourceRef="assign" targetRef="get-os" />
+    <bpmn:userTask id="get-os" name="Обработать ОС" camunda:modelerTemplate="org.camunda.wf.modeler.template.user-task.external">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1i2xf8u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0didbpk</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0didbpk" sourceRef="get-os" targetRef="sfm" />
+    <bpmn:callActivity id="sfm" name="Отправить в СФМ" calledElement="rgs.med.feedback.sfm">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0didbpk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ayjqzx</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>Flow_1ayjqzx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ayjqzx" sourceRef="sfm" targetRef="end" />
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>Flow_1lvm7la</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_06sdwjs" messageRef="Message_1i8t4e8" />
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_1i8t4e8" name="rgs.med.client-feedback.create-rgs-task.message" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_12b3yxw">
+      <bpmndi:BPMNEdge id="Flow_1lvm7la_di" bpmnElement="Flow_1lvm7la">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i2xf8u_di" bpmnElement="Flow_1i2xf8u">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0didbpk_di" bpmnElement="Flow_0didbpk">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ayjqzx_di" bpmnElement="Flow_1ayjqzx">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="752" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0jmi6a5_di" bpmnElement="assign">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mqq7ci_di" bpmnElement="get-os">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1inrec6_di" bpmnElement="sfm">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0fxxpnx_di" bpmnElement="end">
+        <dc:Bounds x="752" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wg1mfl_di" bpmnElement="start">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

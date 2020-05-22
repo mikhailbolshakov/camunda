@@ -35,17 +35,13 @@
       <bpmn:outgoing>Flow_124iwdj</bpmn:outgoing>
       <bpmn:outgoing>Flow_0yyfap8</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="client-os" name="Запросить ОС" camunda:assignee="#{assignedMK.userId}">
-      <bpmn:extensionElements>
-        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
-      </bpmn:extensionElements>
+    <bpmn:userTask id="client-os" name="Запросить ОС" camunda:modelerTemplate="org.camunda.wf.modeler.template.user-task.external" camunda:assignee="#{assignedMK.userId}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_03fywzq</bpmn:incoming>
       <bpmn:outgoing>Flow_0kb5z3l</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="client-contact" name="Установить связь с клиентом" camunda:assignee="#{assignedMK.userId}">
-      <bpmn:extensionElements>
-        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
-      </bpmn:extensionElements>
+    <bpmn:userTask id="client-contact" name="Установить связь с клиентом" camunda:modelerTemplate="org.camunda.wf.modeler.template.user-task.external" camunda:assignee="#{assignedMK.userId}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_007cbnc</bpmn:incoming>
       <bpmn:incoming>Flow_0k3vjqq</bpmn:incoming>
       <bpmn:outgoing>Flow_0kcvjip</bpmn:outgoing>
@@ -55,10 +51,8 @@
       <bpmn:outgoing>Flow_03fywzq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1oikolm</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="set-client-next-contact" name="Запросить время / тип повторного контакта" camunda:assignee="#{assignedMK.userId}">
-      <bpmn:extensionElements>
-        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
-      </bpmn:extensionElements>
+    <bpmn:userTask id="set-client-next-contact" name="Запросить время / тип повторного контакта" camunda:modelerTemplate="org.camunda.wf.modeler.template.user-task.external" camunda:assignee="#{assignedMK.userId}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_124iwdj</bpmn:incoming>
       <bpmn:outgoing>Flow_1pp1q8x</bpmn:outgoing>
     </bpmn:userTask>
@@ -70,10 +64,8 @@
         <bpmn:timeDate xsi:type="bpmn:tFormalExpression">#{feedback.scheduleContact.when}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
-    <bpmn:userTask id="set-next-contact" name="Установить время повторного контакта" camunda:assignee="#{assignedMK.userId}">
-      <bpmn:extensionElements>
-        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
-      </bpmn:extensionElements>
+    <bpmn:userTask id="set-next-contact" name="Установить время повторного контакта" camunda:modelerTemplate="org.camunda.wf.modeler.template.user-task.external" camunda:assignee="#{assignedMK.userId}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1oikolm</bpmn:incoming>
       <bpmn:outgoing>Flow_1gv8v2a</bpmn:outgoing>
     </bpmn:userTask>
@@ -85,7 +77,8 @@
     <bpmn:startEvent id="start">
       <bpmn:outgoing>Flow_1drnxpm</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="get-client" name="Получить данные по клиенту" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+    <bpmn:serviceTask id="get-client" name="Получить данные по клиенту" camunda:modelerTemplate="org.camunda.wf.modeler.template.service-task.external" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1drnxpm</bpmn:incoming>
       <bpmn:outgoing>Flow_0k3vjqq</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -94,17 +87,19 @@
       <bpmn:outgoing>Flow_1wmorrw</bpmn:outgoing>
       <bpmn:outgoing>Flow_05hpuvt</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="close-contact" name="Завершить коммуникацию" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+    <bpmn:serviceTask id="close-contact" name="Завершить коммуникацию" camunda:modelerTemplate="org.camunda.wf.modeler.template.service-task.external" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1agbl4e</bpmn:incoming>
       <bpmn:incoming>Flow_1wmorrw</bpmn:incoming>
       <bpmn:incoming>Flow_1pvfcyu</bpmn:incoming>
       <bpmn:incoming>Flow_02ny4bb</bpmn:incoming>
       <bpmn:outgoing>Flow_1kuz3k1</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateThrowEvent id="client-task-event">
+    <bpmn:intermediateThrowEvent id="client-task-event" camunda:modelerTemplate="org.camunda.wf.modeler.template.throw-event.start-process">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_152g7nr</bpmn:incoming>
       <bpmn:outgoing>Flow_1agbl4e</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1fjoi05" messageRef="Message_1lan373" camunda:class="org.camunda.wf.event.IntermediateThrowEventStartProcessDelegate" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1fjoi05" messageRef="Message_1lan373" />
     </bpmn:intermediateThrowEvent>
     <bpmn:callActivity id="sfm" name="Отправить в СФМ" calledElement="rgs.med.feedback.sfm">
       <bpmn:extensionElements>
@@ -157,10 +152,11 @@
     <bpmn:endEvent id="end">
       <bpmn:incoming>Flow_1kuz3k1</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:intermediateThrowEvent id="rgs-task-event">
+    <bpmn:intermediateThrowEvent id="rgs-task-event" camunda:modelerTemplate="org.camunda.wf.modeler.template.throw-event.start-process">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_05hpuvt</bpmn:incoming>
       <bpmn:outgoing>Flow_1pvfcyu</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0u6rlfp" messageRef="Message_0zoxcx4" camunda:class="org.camunda.wf.event.IntermediateThrowEventStartProcessDelegate" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0u6rlfp" messageRef="Message_0zoxcx4" />
     </bpmn:intermediateThrowEvent>
     <bpmn:textAnnotation id="TextAnnotation_0a94xos">
       <bpmn:text>Установить таймер на повторный контакт</bpmn:text>

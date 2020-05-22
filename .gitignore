@@ -1,6 +1,6 @@
 /target
 /logs
 /.idea
-/.env
+.env
 /docker.helper
 /CAMUNDA_LOG_DIR_IS_UNDEFINED

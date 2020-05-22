@@ -21,7 +21,8 @@
       <bpmn:outgoing>Flow_0t11xvl</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1qttaei" messageRef="Message_15gcyjj" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="get-client" name="Получить данные по клиенту" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+    <bpmn:serviceTask id="get-client" name="Получить данные по клиенту" camunda:modelerTemplate="org.camunda.wf.modeler.template.service-task.external" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0t11xvl</bpmn:incoming>
       <bpmn:outgoing>Flow_0yf8oap</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -30,7 +31,8 @@
       <bpmn:outgoing>Flow_1s7by9o</bpmn:outgoing>
       <bpmn:outgoing>Flow_1gqcs7k</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="delete-os" name="Удалить опрос" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+    <bpmn:serviceTask id="delete-os" name="Удалить опрос" camunda:modelerTemplate="org.camunda.wf.modeler.template.service-task.external" camunda:class="org.camunda.wf.serviceTask.ServiceTaskDelegate">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1gqcs7k</bpmn:incoming>
       <bpmn:incoming>Flow_0yrzpnm</bpmn:incoming>
       <bpmn:outgoing>Flow_0xyn0bz</bpmn:outgoing>
@@ -52,10 +54,8 @@
     <bpmn:sequenceFlow id="Flow_0p09rez" sourceRef="sfm" targetRef="end" />
     <bpmn:sequenceFlow id="Flow_0xyn0bz" sourceRef="delete-os" targetRef="end" />
     <bpmn:sequenceFlow id="Flow_0ri9en6" sourceRef="client-os" targetRef="sfm" />
-    <bpmn:userTask id="client-os" name="Заполнить ОС" camunda:assignee="#{client.userId}">
-      <bpmn:extensionElements>
-        <camunda:taskListener class="org.camunda.wf.userTask.UserTaskCreateListener" event="create" />
-      </bpmn:extensionElements>
+    <bpmn:userTask id="client-os" name="Заполнить ОС" camunda:modelerTemplate="org.camunda.wf.modeler.template.user-task.external" camunda:assignee="#{client.userId}">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0yf8oap</bpmn:incoming>
       <bpmn:outgoing>Flow_0ri9en6</bpmn:outgoing>
     </bpmn:userTask>
@@ -72,10 +72,11 @@
       <bpmn:incoming>Flow_0ri9en6</bpmn:incoming>
       <bpmn:outgoing>Flow_0p09rez</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:intermediateThrowEvent id="rgs-task-event">
+    <bpmn:intermediateThrowEvent id="rgs-task-event" camunda:modelerTemplate="org.camunda.wf.modeler.template.throw-event.start-process">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1s7by9o</bpmn:incoming>
       <bpmn:outgoing>Flow_0yrzpnm</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_17albbz" messageRef="Message_0tadzo3" camunda:class="org.camunda.wf.event.IntermediateThrowEventStartProcessDelegate" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_17albbz" messageRef="Message_0tadzo3" />
     </bpmn:intermediateThrowEvent>
     <bpmn:textAnnotation id="TextAnnotation_0riolk6">
       <bpmn:text>Направлена задача на заполнение ОС</bpmn:text>
@@ -99,9 +100,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_154qicz_di" bpmnElement="Lane_154qicz" isHorizontal="true">
         <dc:Bounds x="182" y="80" width="1068" height="560" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1j9v9qv_di" bpmnElement="TextAnnotation_1j9v9qv">
-        <dc:Bounds x="620" y="520" width="100" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0ri9en6_di" bpmnElement="Flow_0ri9en6">
         <di:waypoint x="620" y="280" />
@@ -172,19 +170,18 @@
       <bpmndi:BPMNShape id="Activity_0c1irz2_di" bpmnElement="sfm">
         <dc:Bounds x="770" y="240" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dc97bw_di" bpmnElement="rgs-task-event">
+        <dc:Bounds x="752" y="522" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0riolk6_di" bpmnElement="TextAnnotation_0riolk6">
         <dc:Bounds x="240" y="160" width="99.99274099883856" height="67.36353077816493" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0wj4sf3_di" bpmnElement="TextAnnotation_0wj4sf3">
         <dc:Bounds x="410" y="390" width="100" height="53" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0dc97bw_di" bpmnElement="rgs-task-event">
-        <dc:Bounds x="752" y="522" width="36" height="36" />
+      <bpmndi:BPMNShape id="TextAnnotation_1j9v9qv_di" bpmnElement="TextAnnotation_1j9v9qv">
+        <dc:Bounds x="620" y="520" width="100" height="68" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_02gf8pa_di" bpmnElement="Association_02gf8pa">
-        <di:waypoint x="752" y="542" />
-        <di:waypoint x="720" y="547" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0eaex05_di" bpmnElement="sla-timer">
         <dc:Bounds x="552" y="302" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -195,6 +192,10 @@
       <bpmndi:BPMNEdge id="Association_01s8e1k_di" bpmnElement="Association_01s8e1k">
         <di:waypoint x="557" y="332" />
         <di:waypoint x="491" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_02gf8pa_di" bpmnElement="Association_02gf8pa">
+        <di:waypoint x="752" y="542" />
+        <di:waypoint x="720" y="547" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

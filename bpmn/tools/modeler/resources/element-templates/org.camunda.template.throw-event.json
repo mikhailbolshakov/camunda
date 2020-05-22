@@ -1,0 +1,9 @@
+  {
+    "name": "Start process",
+    "id": "org.camunda.wf.modeler.template.throw-event.start-process",
+    "appliesTo": [ "bpmn:IntermediateThrowEvent" ],
+    "properties": [],
+    "entriesVisible": {
+      "_all": true
+    }
+  }

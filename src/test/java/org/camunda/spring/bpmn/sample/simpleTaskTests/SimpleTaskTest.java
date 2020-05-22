@@ -8,6 +8,8 @@ import org.camunda.spring.bpmn.setup.BaseProcessTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.HashMap;
+
 public class SimpleTaskTest extends BaseProcessTest {
 
     @Test
@@ -94,6 +96,17 @@ public class SimpleTaskTest extends BaseProcessTest {
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("user-task-process");
 
         assertProcessState(pi.getId(), "COMPLETED");
+    }
+
+    @Test
+    public void throwEvent_StartProcessTemplate_Test() throws MessageBrokerException {
+
+        deployResource("camunda/spring/bpmn/sample/simpleTaskTests/throw-event-start-process.bpmn");
+        deployResource("camunda/spring/bpmn/sample/simpleTaskTests/start-message-empty-process.bpmn");
+
+        String piId = startProcess("test-process", new HashMap<>());
+
+        assertProcessState(piId, "COMPLETED");
     }
 
 }
